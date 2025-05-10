@@ -1,0 +1,1 @@
+/usr/bin/g++ -g CMakeFiles/httpsvrboost.dir/main.cpp.o CMakeFiles/httpsvrboost.dir/HttpServer.cpp.o CMakeFiles/httpsvrboost.dir/HttpGetHandler.cpp.o CMakeFiles/httpsvrboost.dir/HttpRequestHandlerTemplate.cpp.o CMakeFiles/httpsvrboost.dir/HttpRequestTerminator.cpp.o -o httpsvrboost 
