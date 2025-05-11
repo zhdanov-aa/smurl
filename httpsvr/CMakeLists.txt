@@ -13,9 +13,9 @@ include_directories(../commands)
 add_executable(httpsvr main.cpp
     Endpoint.h Endpoint.cpp
     IHttpRequestHandler.h
-    HttpGetHandler.h HttpGetHandler.cpp
-    HttpRequestHandlerChain.h HttpRequestHandlerChain.cpp
-    HttpRequestTerminator.h HttpRequestTerminator.cpp
+    GetHandler.h GetHandler.cpp
+    HttpRequestHandler.h HttpRequestHandler.cpp
+    NotAllowedHandler.h NotAllowedHandler.cpp
     ../IoC/IoC.cpp ../IoC/IoC.h
     ../IoC/IocNewScopeCommand.cpp ../IoC/IocNewScopeCommand.h
     ../IoC/IocRegisterCommand.cpp ../IoC/IocRegisterCommand.h
@@ -35,7 +35,8 @@ add_executable(httpsvr main.cpp
     HttpRequest.h HttpRequest.cpp
     IRequest.h
     ../interface/IOutputCommandStream.h
-    DirectCommandExecutor.h DirectCommandExecutor.cpp)
+    DirectCommandExecutor.h DirectCommandExecutor.cpp
+    BadRequestHandler.h BadRequestHandler.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr

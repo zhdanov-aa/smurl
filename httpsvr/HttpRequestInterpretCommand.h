@@ -10,7 +10,7 @@ using HttpRequestInterpretCommandPtr = std::shared_ptr<HttpRequestInterpretComma
 
 class HttpRequestInterpretCommand : public ICommand
 {
-    IRequestPtr m_client;
+    IRequestPtr m_request;
 
 public:
     HttpRequestInterpretCommand(IRequestPtr client);

@@ -1,16 +1,18 @@
-#include "HttpGetHandler.h"
+#include "GetHandler.h"
 #include <stdexcept>
 
-HttpGetHandler::HttpGetHandler(HttpRequestHandlerChainPtr next)
-    :HttpRequestHandlerChain(next)
+namespace http = boost::beast::http;
+
+GetHandler::GetHandler(HttpRequestHandlerPtr next)
+    :HttpRequestHandler(next)
 {}
 
-bool HttpGetHandler::CanHandle(http::request<http::string_body> &req)
+bool GetHandler::CanHandle(HttpRequestPtr request)
 {
-    return (req.method() == http::verb::get);
+    return (request->request().method() == http::verb::get);
 }
 
-http::response<http::string_body> HttpGetHandler::Handle(http::request<http::string_body> &req)
+void GetHandler::Handle(HttpRequestPtr request)
 {
     http::response<http::string_body> res;
 
@@ -21,5 +23,5 @@ http::response<http::string_body> HttpGetHandler::Handle(http::request<http::str
     res.content_length(res.body().size());
     res.keep_alive(true);
 
-    return res;
+    http::write(request->socket(), res);
 }

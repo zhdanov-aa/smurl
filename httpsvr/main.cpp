@@ -3,8 +3,9 @@
 #include <IException.h>
 #include <IoC.h>
 #include <ICommand.h>
-#include "HttpGetHandler.h"
-#include "HttpRequestTerminator.h"
+#include "GetHandler.h"
+#include "NotAllowedHandler.h"
+#include "BadRequestHandler.h"
 #include "IRequest.h"
 #include "HttpRequest.h"
 #include "HttpRequestInterpretCommand.h"
@@ -59,7 +60,7 @@ void InitIoC()
             static boost::asio::io_context ioc;
             static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
                 std::make_shared<boost::asio::ip::tcp::acceptor>(
-                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8081));
+                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8082));
             IRequestPtr client = std::make_shared<HttpRequest>(acceptor);
             return client;
         })))->Execute();
@@ -82,7 +83,10 @@ void InitIoC()
         "IoC.Register",
         "HttpRequestHandler.New",
         make_container(std::function<IHttpRequestHandlerPtr()>([](){
-            return HttpGetHandler::Create(HttpRequestTerminator::Create());
+            return BadRequestHandler::Create(
+                GetHandler::Create(
+                    NotAllowedHandler::Create())
+                );
         })))->Execute();
 
 }
