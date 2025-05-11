@@ -10,8 +10,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS False)
 
 # Настройка сбора покрытия
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+include(CTest)
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 
 include_directories(../IoC)
 include_directories(../exceptions)
@@ -19,8 +21,6 @@ include_directories(../interface)
 include_directories(../interface.mock)
 include_directories(../commands)
 include_directories(mock)
-
-# include(CTest)
 
 add_executable(ioc_test
     ../IoC/IoC.cpp ../IoC/IoC.h

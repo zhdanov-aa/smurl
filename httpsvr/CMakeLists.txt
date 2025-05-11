@@ -30,7 +30,12 @@ add_executable(httpsvr main.cpp
     ../IoC/ScopeContainer.cpp ../IoC/ScopeContainer.h
     ../exceptions/RuntimeError.cpp ../exceptions/RuntimeError.h
     ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
-    ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h)
+    ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
+    HttpRequestInterpretCommand.h HttpRequestInterpretCommand.cpp
+    HttpClientInfo.h HttpClientInfo.cpp
+    IHttpClient.h
+    ../interface/IOutputCommandStream.h
+    DirectCommandExecutor.h DirectCommandExecutor.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr

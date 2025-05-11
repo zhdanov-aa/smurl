@@ -7,6 +7,9 @@
 #include <string>
 #include <IoC.h>
 #include "IHttpRequestHandler.h"
+#include "IHttpClient.h"
+#include "HttpRequestInterpretCommand.h"
+#include <IOutputCommandStream.h>
 
 namespace http = boost::beast::http;
 
@@ -17,51 +20,42 @@ HttpServer::HttpServer()
 void HttpServer::EventLoop()
 {
     // Создаем контекст и сокет
-    boost::asio::io_context ioc;
-    boost::asio::ip::tcp::acceptor acceptor(ioc,
-                                            boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8080));
-
+     // boost::asio::io_context ioc;
+     // boost::asio::ip::tcp::acceptor acceptor(ioc,
+     //                                         boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8080));
     std::cout << "Сервер запущен на порту 8080" << std::endl;
 
-    for(;;) {
-        // Принимаем новое соединение
-        boost::asio::ip::tcp::socket socket(ioc);
-        acceptor.accept(socket);
+    while(IoC::Resolve<bool>("Server.Alive.Get"))
+    {
+        auto client = IoC::Resolve<IHttpClientPtr>("Client.New");
 
-        // Создаем буфер для запроса
-        boost::beast::flat_buffer buffer;
-        http::request<http::string_body> req;
-        http::response<http::string_body> res;
+        client->Accept();
 
-        // Читаем запрос с проверкой
-        boost::beast::error_code ec;
-        http::read(socket, buffer, req, ec);
+        IoC::Resolve<IOutputCommandStreamPtr>("Server.OutputCommandStream.Get")->Write(
+            IoC::Resolve<ICommandPtr>("Client.RequestInterpretCommand.New", client));
 
-        if (!ec)
-        {
-            res = IoC::Resolve<IHttpRequestHandlerPtr>(
-                      "HttpSvr.RequestHandler.Get")->HandleRequest(req);
+        // TODO: to command
+        // if (!client.error())
+        // {
+        //     http::response<http::string_body> res;
+        //     res = IoC::Resolve<IHttpRequestHandlerPtr>(
+        //               "HttpSvr.RequestHandler.Get")->HandleRequest(client.request());
 
-            http::write(socket, res);
-        }
-        else
-        {
-            // Формируем ответ об ошибке
-            res.result(http::status::bad_request);
-            res.set(http::field::content_type, "text/plain");
-            res.body() = "Ошибка чтения запроса";
-            res.content_length(res.body().size());
-            res.keep_alive(true);
+        //     http::write(client.socket(), res);
+        // }
+        // else
+        // {
+        //     // Формируем ответ об ошибке
+        //     http::response<http::string_body> res;
+        //     res.result(http::status::bad_request);
+        //     res.set(http::field::content_type, "text/plain");
+        //     res.body() = "Ошибка чтения запроса";
+        //     res.content_length(res.body().size());
+        //     res.keep_alive(true);
 
-            // Отправляем ответ об ошибке
-            http::write(socket, res, ec);
-        }
+        //     // Отправляем ответ об ошибке
+        //     http::write(client.socket(), res);
+        // }
 
-        // Закрываем соединение
-        socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
-
-        // Игнорируем ошибки при закрытии
-        if(ec && ec != boost::beast::errc::not_connected)
-            throw boost::beast::system_error{ec};
     }
 }
