@@ -1,5 +1,5 @@
-#ifndef IHTTPCLIENT_H
-#define IHTTPCLIENT_H
+#ifndef ICLIENT_H
+#define ICLIENT_H
 
 #include <memory>
 
@@ -12,4 +12,4 @@ public:
 
 using IHttpClientPtr = std::shared_ptr<IHttpClient>;
 
-#endif // IHTTPCLIENT_H
+#endif // ICLIENT_H

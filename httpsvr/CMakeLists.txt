@@ -33,7 +33,7 @@ add_executable(httpsvr main.cpp
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
     HttpRequestInterpretCommand.h HttpRequestInterpretCommand.cpp
     HttpClientInfo.h HttpClientInfo.cpp
-    IHttpClient.h
+    IClient.h
     ../interface/IOutputCommandStream.h
     DirectCommandExecutor.h DirectCommandExecutor.cpp)
 

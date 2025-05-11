@@ -1,7 +1,7 @@
 #ifndef HTTPCLIENTINFO_H
 #define HTTPCLIENTINFO_H
 
-#include "IHttpClient.h"
+#include "IClient.h"
 #include <boost/asio.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>

@@ -3,7 +3,7 @@
 
 #include <ICommand.h>
 #include <memory>
-#include "IHttpClient.h"
+#include "IClient.h"
 
 class HttpRequestInterpretCommand;
 using HttpRequestInterpretCommandPtr = std::shared_ptr<HttpRequestInterpretCommand>;

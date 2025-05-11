@@ -5,7 +5,7 @@
 #include <ICommand.h>
 #include "HttpGetHandler.h"
 #include "HttpRequestTerminator.h"
-#include "IHttpClient.h"
+#include "IClient.h"
 #include "HttpClientInfo.h"
 #include "HttpRequestInterpretCommand.h"
 #include "IOutputCommandStream.h"

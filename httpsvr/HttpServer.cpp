@@ -7,7 +7,7 @@
 #include <string>
 #include <IoC.h>
 #include "IHttpRequestHandler.h"
-#include "IHttpClient.h"
+#include "IClient.h"
 #include "HttpRequestInterpretCommand.h"
 #include <IOutputCommandStream.h>
 
