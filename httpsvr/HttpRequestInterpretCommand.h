@@ -3,19 +3,19 @@
 
 #include <ICommand.h>
 #include <memory>
-#include "IClient.h"
+#include "IRequest.h"
 
 class HttpRequestInterpretCommand;
 using HttpRequestInterpretCommandPtr = std::shared_ptr<HttpRequestInterpretCommand>;
 
 class HttpRequestInterpretCommand : public ICommand
 {
-    IHttpClientPtr m_client;
+    IRequestPtr m_client;
 
 public:
-    HttpRequestInterpretCommand(IHttpClientPtr client);
+    HttpRequestInterpretCommand(IRequestPtr client);
 
-    static HttpRequestInterpretCommandPtr Create(IHttpClientPtr client) { return std::make_shared<HttpRequestInterpretCommand>(client); }
+    static HttpRequestInterpretCommandPtr Create(IRequestPtr client) { return std::make_shared<HttpRequestInterpretCommand>(client); }
 
     void Execute() override;
 };

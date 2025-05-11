@@ -1,18 +1,18 @@
 #include "HttpRequestInterpretCommand.h"
-#include "HttpClientInfo.h"
+#include "HttpRequest.h"
 #include "IHttpRequestHandler.h"
 #include <IoC.h>
 
 namespace http = boost::beast::http;
 
-HttpRequestInterpretCommand::HttpRequestInterpretCommand(IHttpClientPtr client)
+HttpRequestInterpretCommand::HttpRequestInterpretCommand(IRequestPtr client)
     :m_client(client)
 {}
 
 
 void HttpRequestInterpretCommand::Execute()
 {
-    HttpClientInfoPtr client = std::dynamic_pointer_cast<HttpClientInfo>(m_client);
+    HttpRequestPtr client = std::dynamic_pointer_cast<HttpRequest>(m_client);
 
     if (!client->error())
     {

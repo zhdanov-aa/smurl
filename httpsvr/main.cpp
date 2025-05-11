@@ -1,12 +1,12 @@
-#include "HttpServer.h"
+#include "Endpoint.h"
 #include <iostream>
 #include <IException.h>
 #include <IoC.h>
 #include <ICommand.h>
 #include "HttpGetHandler.h"
 #include "HttpRequestTerminator.h"
-#include "IClient.h"
-#include "HttpClientInfo.h"
+#include "IRequest.h"
+#include "HttpRequest.h"
 #include "HttpRequestInterpretCommand.h"
 #include "IOutputCommandStream.h"
 #include "DirectCommandExecutor.h"
@@ -19,7 +19,7 @@ int main()
 
     try
     {
-        HttpServer svr;
+        Endpoint svr;
         svr.EventLoop();
     }
     catch(std::exception& e)
@@ -47,35 +47,35 @@ void InitIoC()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Server.Alive.Get",
+        "Endpoint.Alive.Get",
         make_container(std::function<bool()>([](){
             return true;
         })))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Client.New",
-        make_container(std::function<IHttpClientPtr()>([](){
+        "Endpoint.Request.New",
+        make_container(std::function<IRequestPtr()>([](){
             static boost::asio::io_context ioc;
             static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
                 std::make_shared<boost::asio::ip::tcp::acceptor>(
                     ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8081));
-            IHttpClientPtr client = std::make_shared<HttpClientInfo>(acceptor);
+            IRequestPtr client = std::make_shared<HttpRequest>(acceptor);
             return client;
         })))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Server.OutputCommandStream.Get",
+        "Endpoint.OutputCommandStream.Get",
         make_container(std::function<IOutputCommandStreamPtr()>([](){
             return DirectCommandExecutor::Create();
         })))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Client.RequestInterpretCommand.New",
-        make_container(std::function<ICommandPtr(IHttpClientPtr)>([](IHttpClientPtr client){
-            return HttpRequestInterpretCommand::Create(client);
+        "Endpoint.RequestInterpretCommand.New",
+        make_container(std::function<ICommandPtr(IRequestPtr)>([](IRequestPtr request){
+            return HttpRequestInterpretCommand::Create(request);
         })))->Execute();
 
     IoC::Resolve<ICommandPtr>(

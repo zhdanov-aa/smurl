@@ -1,12 +1,12 @@
-#include "HttpClientInfo.h"
+#include "HttpRequest.h"
 
-HttpClientInfo::HttpClientInfo(std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor)
+HttpRequest::HttpRequest(std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor)
     :m_acceptor(acceptor)
 {
     m_socket = std::make_shared<boost::asio::ip::tcp::socket>(m_acceptor->get_executor());
 }
 
-HttpClientInfo::~HttpClientInfo()
+HttpRequest::~HttpRequest()
 {
     // Закрываем соединение
     if (m_socket != nullptr)
@@ -16,7 +16,7 @@ HttpClientInfo::~HttpClientInfo()
     }
 }
 
-void HttpClientInfo::Accept()
+void HttpRequest::Accept()
 {
     // Принимаем новое соединение
     m_acceptor->accept(*m_socket);

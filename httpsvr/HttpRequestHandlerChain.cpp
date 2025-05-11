@@ -1,12 +1,12 @@
-#include "HttpRequestHandlerTemplate.h"
+#include "HttpRequestHandlerChain.h"
 #include <stdexcept>
 
-HttpRequestHandlerTemplate::HttpRequestHandlerTemplate(HttpRequestHandlerTemplatePtr next)
+HttpRequestHandlerChain::HttpRequestHandlerChain(HttpRequestHandlerChainPtr next)
     :m_Successer(next)
 {
 }
 
-http::response<boost::beast::http::string_body> HttpRequestHandlerTemplate::HandleRequest(http::request<http::string_body> &req)
+http::response<boost::beast::http::string_body> HttpRequestHandlerChain::HandleRequest(http::request<http::string_body> &req)
 {
     if (CanHandle(req))
     {

@@ -1,17 +1,17 @@
-#ifndef HTTPCLIENTINFO_H
-#define HTTPCLIENTINFO_H
+#ifndef HTTPREQUEST_H
+#define HTTPREQUEST_H
 
-#include "IClient.h"
+#include "IRequest.h"
 #include <boost/asio.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <memory>
 
-class HttpClientInfo;
-using HttpClientInfoPtr = std::shared_ptr<HttpClientInfo>;
+class HttpRequest;
+using HttpRequestPtr = std::shared_ptr<HttpRequest>;
 
-class HttpClientInfo: public IHttpClient
+class HttpRequest: public IRequest
 {
     std::shared_ptr<boost::asio::ip::tcp::acceptor> m_acceptor;
 
@@ -21,8 +21,8 @@ class HttpClientInfo: public IHttpClient
     boost::beast::error_code m_error;
 
 public:
-    HttpClientInfo(std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor);
-    ~HttpClientInfo();
+    HttpRequest(std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor);
+    ~HttpRequest();
 
     boost::asio::ip::tcp::socket& socket() { return *m_socket; }
     boost::beast::flat_buffer& buffer() { return m_buffer; }
@@ -32,4 +32,4 @@ public:
     void Accept() override;
 };
 
-#endif // HTTPCLIENTINFO_H
+#endif // HTTPREQUEST_H

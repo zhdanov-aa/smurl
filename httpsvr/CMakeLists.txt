@@ -11,10 +11,10 @@ include_directories(../interface)
 include_directories(../commands)
 
 add_executable(httpsvr main.cpp
-    HttpServer.h HttpServer.cpp
+    Endpoint.h Endpoint.cpp
     IHttpRequestHandler.h
     HttpGetHandler.h HttpGetHandler.cpp
-    HttpRequestHandlerTemplate.h HttpRequestHandlerTemplate.cpp
+    HttpRequestHandlerChain.h HttpRequestHandlerChain.cpp
     HttpRequestTerminator.h HttpRequestTerminator.cpp
     ../IoC/IoC.cpp ../IoC/IoC.h
     ../IoC/IocNewScopeCommand.cpp ../IoC/IocNewScopeCommand.h
@@ -32,8 +32,8 @@ add_executable(httpsvr main.cpp
     ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
     HttpRequestInterpretCommand.h HttpRequestInterpretCommand.cpp
-    HttpClientInfo.h HttpClientInfo.cpp
-    IClient.h
+    HttpRequest.h HttpRequest.cpp
+    IRequest.h
     ../interface/IOutputCommandStream.h
     DirectCommandExecutor.h DirectCommandExecutor.cpp)
 

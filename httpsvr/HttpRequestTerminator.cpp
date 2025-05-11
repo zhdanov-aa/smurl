@@ -1,7 +1,7 @@
 #include "HttpRequestTerminator.h"
 
 HttpRequestTerminator::HttpRequestTerminator()
-    :HttpRequestHandlerTemplate(nullptr)
+    :HttpRequestHandlerChain(nullptr)
 {
 }
 

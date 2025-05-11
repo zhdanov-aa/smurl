@@ -1,8 +1,8 @@
 #include "HttpGetHandler.h"
 #include <stdexcept>
 
-HttpGetHandler::HttpGetHandler(HttpRequestHandlerTemplatePtr next)
-    :HttpRequestHandlerTemplate(next)
+HttpGetHandler::HttpGetHandler(HttpRequestHandlerChainPtr next)
+    :HttpRequestHandlerChain(next)
 {}
 
 bool HttpGetHandler::CanHandle(http::request<http::string_body> &req)

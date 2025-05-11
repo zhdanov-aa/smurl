@@ -1,13 +1,13 @@
 #ifndef HTTPREQUESTTERMINATOR_H
 #define HTTPREQUESTTERMINATOR_H
 
-#include "HttpRequestHandlerTemplate.h"
+#include "HttpRequestHandlerChain.h"
 #include <memory>
 
 class HttpRequestTerminator;
 using HttpRequestTerminatorPtr = std::shared_ptr<HttpRequestTerminator>;
 
-class HttpRequestTerminator : public HttpRequestHandlerTemplate
+class HttpRequestTerminator : public HttpRequestHandlerChain
 {
 public:
     HttpRequestTerminator();
