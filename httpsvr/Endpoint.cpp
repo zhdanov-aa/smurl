@@ -1,5 +1,7 @@
-#include "Endpoint.h"
 #include <string>
+//#include <iostream>
+
+#include "Endpoint.h"
 #include <IoC.h>
 #include "IHttpRequestHandler.h"
 #include "IRequest.h"
@@ -14,11 +16,12 @@ void Endpoint::EventLoop()
 {
     while(IoC::Resolve<bool>("Endpoint.Alive.Get"))
     {
-        auto request = IoC::Resolve<IRequestPtr>("Endpoint.Request.New");
+        std::string requestId = IoC::Resolve<std::string>("Endpoint.Request.New");
 
-        request->Accept();
+        IoC::Resolve<ICommandPtr>("Endpoint.Request.AcceptCommand.New", requestId)->Execute();
 
         IoC::Resolve<IOutputCommandStreamPtr>("Endpoint.OutputCommandStream.Get")->Write(
-            IoC::Resolve<ICommandPtr>("Endpoint.RequestInterpretCommand.New", request));
+            IoC::Resolve<ICommandPtr>("Endpoint.Request.InterpretCommand.New", requestId)
+            );
     }
 }
