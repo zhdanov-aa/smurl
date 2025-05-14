@@ -3,14 +3,12 @@
 #include "IHttpRequestHandler.h"
 #include <IoC.h>
 
-HttpRequestInterpretCommand::HttpRequestInterpretCommand(IRequestPtr request)
+HttpRequestInterpretCommand::HttpRequestInterpretCommand(HttpRequestPtr request)
     :m_request(request)
 {}
 
 void HttpRequestInterpretCommand::Execute()
 {
-    HttpRequestPtr httpRequest = std::dynamic_pointer_cast<HttpRequest>(m_request);
-
     IoC::Resolve<IHttpRequestHandlerPtr>(
-        "HttpRequestHandler.New")->HandleRequest(httpRequest);
+        "HttpRequestHandler.New")->HandleRequest(m_request);
 }

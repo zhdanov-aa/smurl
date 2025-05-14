@@ -1,7 +1,6 @@
 #ifndef HTTPREQUEST_H
 #define HTTPREQUEST_H
 
-#include "IRequest.h"
 #include <boost/asio.hpp>
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -11,7 +10,7 @@
 class HttpRequest;
 using HttpRequestPtr = std::shared_ptr<HttpRequest>;
 
-class HttpRequest: public IRequest
+class HttpRequest
 {
     std::shared_ptr<boost::asio::ip::tcp::acceptor> m_acceptor;
 
@@ -24,12 +23,11 @@ public:
     HttpRequest(std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor);
     ~HttpRequest();
 
+    boost::asio::ip::tcp::acceptor& acceptor() { return *m_acceptor; }
     boost::asio::ip::tcp::socket& socket() { return *m_socket; }
     boost::beast::flat_buffer& buffer() { return m_buffer; }
     boost::beast::http::request<boost::beast::http::string_body>& request() { return m_request; }
     boost::beast::error_code& error() { return m_error; }
-
-    void Accept() override;
 };
 
 #endif // HTTPREQUEST_H

@@ -1,21 +1,21 @@
 #ifndef HTTPREQUESTINTERPRETCOMMAND_H
 #define HTTPREQUESTINTERPRETCOMMAND_H
 
-#include <ICommand.h>
+#include "ICommand.h"
+#include "HttpRequest.h"
 #include <memory>
-#include "IRequest.h"
 
 class HttpRequestInterpretCommand;
 using HttpRequestInterpretCommandPtr = std::shared_ptr<HttpRequestInterpretCommand>;
 
 class HttpRequestInterpretCommand : public ICommand
 {
-    IRequestPtr m_request;
+    HttpRequestPtr m_request;
 
 public:
-    HttpRequestInterpretCommand(IRequestPtr client);
+    HttpRequestInterpretCommand(HttpRequestPtr request);
 
-    static HttpRequestInterpretCommandPtr Create(IRequestPtr client) { return std::make_shared<HttpRequestInterpretCommand>(client); }
+    static HttpRequestInterpretCommandPtr Create(HttpRequestPtr request) { return std::make_shared<HttpRequestInterpretCommand>(request); }
 
     void Execute() override;
 };

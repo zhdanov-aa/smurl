@@ -1,12 +1,8 @@
-#include <string>
-//#include <iostream>
-
 #include "Endpoint.h"
-#include <IoC.h>
-#include "IHttpRequestHandler.h"
-#include "IRequest.h"
-#include "HttpRequestInterpretCommand.h"
-#include <IOutputCommandStream.h>
+#include "IoC.h"
+#include "IOutputCommandStream.h"
+#include "IRequestAcceptingObject.h"
+#include <string>
 
 Endpoint::Endpoint()
 {
@@ -16,12 +12,17 @@ void Endpoint::EventLoop()
 {
     while(IoC::Resolve<bool>("Endpoint.Alive.Get"))
     {
-        std::string requestId = IoC::Resolve<std::string>("Endpoint.Request.New");
+        auto requestId = IoC::Resolve<std::string>("Endpoint.Request.Get");
 
-        IoC::Resolve<ICommandPtr>("Endpoint.Request.AcceptCommand.New", requestId)->Execute();
+        IoC::Resolve<IRequestAcceptingObjectPtr>(
+            "Endpoint.Request.AcceptingObject.Get",
+            requestId)->Accept();
 
-        IoC::Resolve<IOutputCommandStreamPtr>("Endpoint.OutputCommandStream.Get")->Write(
-            IoC::Resolve<ICommandPtr>("Endpoint.Request.InterpretCommand.New", requestId)
-            );
+        auto stream = IoC::Resolve<IOutputCommandStreamPtr>("Endpoint.OutputCommandStream.Get");
+
+        stream->Write(IoC::Resolve<ICommandPtr>("Endpoint.Request.InterpretCommand.Get", requestId));
+
+        // TODO:
+        // stream->Write(IoC::Resolve<ICommandPtr>("Endpoint.Request.CloseCommand.Get", requestId));
     }
 }

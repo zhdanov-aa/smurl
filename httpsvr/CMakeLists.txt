@@ -33,10 +33,11 @@ add_executable(httpsvr main.cpp
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
     HttpRequestInterpretCommand.h HttpRequestInterpretCommand.cpp
     HttpRequest.h HttpRequest.cpp
-    IRequest.h
     ../interface/IOutputCommandStream.h
     DirectCommandExecutor.h DirectCommandExecutor.cpp
-    BadRequestHandler.h BadRequestHandler.cpp)
+    BadRequestHandler.h BadRequestHandler.cpp
+    IRequestAcceptingObject.h
+    HttpRequestAcceptingObject.h HttpRequestAcceptingObject.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr
