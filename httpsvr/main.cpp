@@ -11,6 +11,7 @@
 #include "IOutputCommandStream.h"
 #include "DirectCommandExecutor.h"
 #include "IRequestAcceptingObject.h"
+#include "IDeletingObject.h"
 #include "HttpRequestAcceptingObject.h"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -86,6 +87,19 @@ void InitIoC()
             IRequestAcceptingObjectPtr acceptingObject = HttpRequestAcceptingObject::Create(
                 s_requests[requestId]);
             return acceptingObject;
+
+        })))->Execute();
+
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
+        "Endpoint.Request.DeletingObject.Get",
+        make_container(std::function<IDeletingObjectPtr(std::string)>([&](std::string requestId){
+
+
+            // TODO:
+            // IDeletingObjectPtr obj = HttpRequestDeletingObject::Create(
+            //     s_requests[requestId]);
+            // return obj;
 
         })))->Execute();
 
