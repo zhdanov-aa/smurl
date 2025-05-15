@@ -8,10 +8,10 @@
 #include "BadRequestHandler.h"
 #include "HttpRequest.h"
 #include "HttpRequestInterpretCommand.h"
+#include "DeleteCommand.h"
 #include "IOutputCommandStream.h"
 #include "DirectCommandExecutor.h"
 #include "IRequestAcceptingObject.h"
-#include "IDeletingObject.h"
 #include "HttpRequestAcceptingObject.h"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -81,25 +81,21 @@ void InitIoC()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
+        "Endpoint.Request.Delete",
+        make_container(std::function<std::string()>([&](){
+
+            s_requests.erase(requestId);
+
+        })))->Execute();
+
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
         "Endpoint.Request.AcceptingObject.Get",
         make_container(std::function<IRequestAcceptingObjectPtr(std::string)>([&](std::string requestId){
 
             IRequestAcceptingObjectPtr acceptingObject = HttpRequestAcceptingObject::Create(
                 s_requests[requestId]);
             return acceptingObject;
-
-        })))->Execute();
-
-    IoC::Resolve<ICommandPtr>(
-        "IoC.Register",
-        "Endpoint.Request.DeletingObject.Get",
-        make_container(std::function<IDeletingObjectPtr(std::string)>([&](std::string requestId){
-
-
-            // TODO:
-            // IDeletingObjectPtr obj = HttpRequestDeletingObject::Create(
-            //     s_requests[requestId]);
-            // return obj;
 
         })))->Execute();
 
@@ -117,9 +113,22 @@ void InitIoC()
         "Endpoint.Request.InterpretCommand.Get",
         make_container(std::function<ICommandPtr(std::string)>([&](std::string requestId){
 
+            // TODO: макрокомманд return DeleteCommand::Create(requestId);
+            
             return HttpRequestInterpretCommand::Create(s_requests[requestId]);
 
+        //stream->Write(IoC::Resolve<ICommandPtr>("Endpoint.Request.DeleteCommand.Get", requestId));
+
         })))->Execute();
+
+    // IoC::Resolve<ICommandPtr>(
+    //     "IoC.Register",
+    //     "Endpoint.Request.DeleteCommand.Get",
+    //     make_container(std::function<IDeletingObjectPtr(std::string)>([&](std::string requestId){
+
+    //         return DeleteCommand::Create(requestId);
+
+    //     })))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",

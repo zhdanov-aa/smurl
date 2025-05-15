@@ -2,7 +2,6 @@
 #include "IoC.h"
 #include "IOutputCommandStream.h"
 #include "IRequestAcceptingObject.h"
-#include "DeleteCommand.h"
 #include <string>
 
 Endpoint::Endpoint()
@@ -16,13 +15,10 @@ void Endpoint::EventLoop()
         auto requestId = IoC::Resolve<std::string>("Endpoint.Request.Get");
 
         IoC::Resolve<IRequestAcceptingObjectPtr>(
-            "Endpoint.Request.AcceptingObject.Get",
-            requestId)->Accept();
+            "Endpoint.Request.AcceptingObject.Get", requestId)->Accept();
 
-        auto stream = IoC::Resolve<IOutputCommandStreamPtr>("Endpoint.OutputCommandStream.Get");
-
-        stream->Write(IoC::Resolve<ICommandPtr>("Endpoint.Request.InterpretCommand.Get", requestId));
-        stream->Write(DeleteCommand::Create(
-            IoC::Resolve<ICommandPtr>("Endpoint.Request.DeletingObject.Get", requestId)));
+        IoC::Resolve<IOutputCommandStreamPtr>("Endpoint.OutputCommandStream.Get")->Write(
+            IoC::Resolve<ICommandPtr>("Endpoint.Request.InterpretCommand.Get", requestId)
+            );
     }
 }

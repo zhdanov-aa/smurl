@@ -1,16 +1,13 @@
 #include "DeleteCommand.h"
-#include "InvalidArgument.h"
+#include "IoC.h"
 
-DeleteCommand::DeleteCommand(IDeletingObjectPtr obj)
-    :m_object(obj)
+DeleteCommand::DeleteCommand(std::string requestId)
+    :m_requestId(requestId)
 {
 }
 
 
 void DeleteCommand::Execute()
 {
-    if (m_object == nullptr)
-        throw new InvalidArgument("DeleteCommand::Execute(): object is nullptr");
-
-    m_object->Delete();
+    IoC::Resolve<void>("Endpoint.Request.Delete", m_requestId)
 }
