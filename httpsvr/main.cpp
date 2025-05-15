@@ -8,7 +8,8 @@
 #include "BadRequestHandler.h"
 #include "HttpRequest.h"
 #include "HttpRequestInterpretCommand.h"
-#include "DeleteCommand.h"
+#include "DeleteHttpRequestCommand.h"
+#include "MacroCommand.h"
 #include "IOutputCommandStream.h"
 #include "DirectCommandExecutor.h"
 #include "IRequestAcceptingObject.h"
@@ -18,6 +19,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <map>
 #include <string>
+#include <vector>
 
 void InitIoC();
 
@@ -46,14 +48,7 @@ int main()
 
 void InitIoC()
 {
-    // std::shared_ptr<boost::asio::io_context> ioc = std::make_shared<boost::asio::io_context>();
-    // std::shared_ptr<> endpoint = std::make_shared<>();
-    // static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
-    //     std::make_shared<boost::asio::ip::tcp::acceptor>(
-    //         boost::asio::io_context,
-    //         boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8080));
-
-    static std::map<std::string, HttpRequestPtr> s_requests;
+    auto requests = std::make_shared<std::map<std::string, HttpRequestPtr>>();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
@@ -66,35 +61,26 @@ void InitIoC()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Endpoint.Request.Get",
-        make_container(std::function<std::string()>([&](){
+        "Endpoint.Request.New",
+        make_container(std::function<std::string()>([requests](){
 
             static boost::asio::io_context ioc;
             static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
                 std::make_shared<boost::asio::ip::tcp::acceptor>(
                     ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8083));
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
-            s_requests[requestId] = std::make_shared<HttpRequest>(acceptor);
+            (*requests)[requestId] = std::make_shared<HttpRequest>(acceptor);
             return requestId;
 
         })))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Endpoint.Request.Delete",
-        make_container(std::function<std::string()>([&](){
-
-            s_requests.erase(requestId);
-
-        })))->Execute();
-
-    IoC::Resolve<ICommandPtr>(
-        "IoC.Register",
         "Endpoint.Request.AcceptingObject.Get",
-        make_container(std::function<IRequestAcceptingObjectPtr(std::string)>([&](std::string requestId){
+        make_container(std::function<IRequestAcceptingObjectPtr(std::string)>([requests](std::string requestId){
 
             IRequestAcceptingObjectPtr acceptingObject = HttpRequestAcceptingObject::Create(
-                s_requests[requestId]);
+                (*requests)[requestId]);
             return acceptingObject;
 
         })))->Execute();
@@ -111,24 +97,15 @@ void InitIoC()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Endpoint.Request.InterpretCommand.Get",
-        make_container(std::function<ICommandPtr(std::string)>([&](std::string requestId){
+        make_container(std::function<ICommandPtr(std::string)>([requests](std::string requestId){
 
-            // TODO: макрокомманд return DeleteCommand::Create(requestId);
-            
-            return HttpRequestInterpretCommand::Create(s_requests[requestId]);
-
-        //stream->Write(IoC::Resolve<ICommandPtr>("Endpoint.Request.DeleteCommand.Get", requestId));
+            std::vector<ICommandPtr> commands = {
+                HttpRequestInterpretCommand::Create((*requests)[requestId]),
+                DeleteHttpRequestCommand::Create(requests, requestId)
+            };
+            return MacroCommand::Create(commands);
 
         })))->Execute();
-
-    // IoC::Resolve<ICommandPtr>(
-    //     "IoC.Register",
-    //     "Endpoint.Request.DeleteCommand.Get",
-    //     make_container(std::function<IDeletingObjectPtr(std::string)>([&](std::string requestId){
-
-    //         return DeleteCommand::Create(requestId);
-
-    //     })))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",

@@ -12,7 +12,7 @@ void Endpoint::EventLoop()
 {
     while(IoC::Resolve<bool>("Endpoint.Alive.Get"))
     {
-        auto requestId = IoC::Resolve<std::string>("Endpoint.Request.Get");
+        auto requestId = IoC::Resolve<std::string>("Endpoint.Request.New");
 
         IoC::Resolve<IRequestAcceptingObjectPtr>(
             "Endpoint.Request.AcceptingObject.Get", requestId)->Accept();
