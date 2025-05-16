@@ -15,7 +15,7 @@ public:
     static GetHandlerPtr Create(HttpRequestHandlerPtr next) { return std::make_shared<GetHandler>(next); }
 
     bool CanHandle(HttpRequestPtr request) override;
-    void Handle(HttpRequestPtr request) override;
+    ICommandPtr Handle(HttpRequestPtr request) override;
 };
 
 #endif // GETHANDLER_H

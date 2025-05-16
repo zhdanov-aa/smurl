@@ -15,7 +15,7 @@ public:
     static NotAllowedHandlerPtr Create() { return std::make_shared<NotAllowedHandler>(); }
 
     bool CanHandle(HttpRequestPtr request) override;
-    void Handle(HttpRequestPtr request) override;
+    ICommandPtr Handle(HttpRequestPtr request) override;
 };
 
 #endif // NOTALLOWEDHANDLER_H

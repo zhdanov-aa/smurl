@@ -6,15 +6,15 @@ HttpRequestHandler::HttpRequestHandler(HttpRequestHandlerPtr next)
 {
 }
 
-void HttpRequestHandler::HandleRequest(HttpRequestPtr request)
+ICommandPtr HttpRequestHandler::HandleRequest(HttpRequestPtr request)
 {
     if (CanHandle(request))
     {
-        Handle(request);
+        return Handle(request);
     }
     else if (m_Successer != nullptr)
     {
-        m_Successer->HandleRequest(request);
+        return m_Successer->HandleRequest(request);
     }
     else
     {

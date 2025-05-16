@@ -23,6 +23,8 @@ public:
     HttpRequest(std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor);
     ~HttpRequest();
 
+    std::shared_ptr<boost::asio::ip::tcp::socket> socketptr() { return m_socket; }
+
     boost::asio::ip::tcp::acceptor& acceptor() { return *m_acceptor; }
     boost::asio::ip::tcp::socket& socket() { return *m_socket; }
     boost::beast::flat_buffer& buffer() { return m_buffer; }

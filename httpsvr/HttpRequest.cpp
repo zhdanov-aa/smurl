@@ -16,11 +16,3 @@ HttpRequest::~HttpRequest()
     }
 }
 
-// void HttpRequest::Accept()
-// {
-//     // Принимаем новое соединение
-//     m_acceptor->accept(*m_socket);
-
-//     // Читаем запрос с проверкой
-//     boost::beast::http::read(*m_socket, m_buffer, m_request, m_error);
-// }

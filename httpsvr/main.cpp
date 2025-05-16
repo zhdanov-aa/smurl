@@ -109,13 +109,12 @@ void InitIoC()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "HttpRequestHandler.New",
+        "HttpRequestHandler.Get",
         make_container(std::function<IHttpRequestHandlerPtr()>([](){
 
             return BadRequestHandler::Create(
                 GetHandler::Create(
-                    NotAllowedHandler::Create())
-                );
+                    NotAllowedHandler::Create()));
 
         })))->Execute();
 

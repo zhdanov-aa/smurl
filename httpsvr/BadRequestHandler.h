@@ -15,7 +15,7 @@ public:
     static BadRequestHandlerPtr Create(HttpRequestHandlerPtr next) { return std::make_shared<BadRequestHandler>(next); }
 
     bool CanHandle(HttpRequestPtr request) override;
-    void Handle(HttpRequestPtr request) override;
+    ICommandPtr Handle(HttpRequestPtr request) override;
 };
 
 #endif // BADREQUESTHANDLER_H

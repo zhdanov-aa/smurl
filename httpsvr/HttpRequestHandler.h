@@ -13,12 +13,12 @@ class HttpRequestHandler: public IHttpRequestHandler
 
 protected:
     virtual bool CanHandle(HttpRequestPtr request) = 0;
-    virtual void Handle(HttpRequestPtr request) = 0;
+    virtual ICommandPtr Handle(HttpRequestPtr request) = 0;
 
 public:
     HttpRequestHandler(HttpRequestHandlerPtr next);
 
-    void HandleRequest(HttpRequestPtr request) override;
+    ICommandPtr HandleRequest(HttpRequestPtr request) override;
 };
 
 #endif // HTTPREQUESTHANDLER_H

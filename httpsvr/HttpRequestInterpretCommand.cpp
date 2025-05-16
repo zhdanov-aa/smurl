@@ -9,6 +9,9 @@ HttpRequestInterpretCommand::HttpRequestInterpretCommand(HttpRequestPtr request)
 
 void HttpRequestInterpretCommand::Execute()
 {
-    IoC::Resolve<IHttpRequestHandlerPtr>(
-        "HttpRequestHandler.New")->HandleRequest(m_request);
+    auto handler = IoC::Resolve<IHttpRequestHandlerPtr>("HttpRequestHandler.Get");
+
+    auto command = handler->HandleRequest(m_request);
+
+    command->Execute();
 }
