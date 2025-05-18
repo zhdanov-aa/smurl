@@ -1,19 +1,22 @@
 #include "GetHandler.h"
-#include "HttpRedirectCommand.h"
+#include "SendRedirectCommand.h"
 #include <stdexcept>
 
 namespace http = boost::beast::http;
 
-GetHandler::GetHandler(HttpRequestHandlerPtr next)
-    :HttpRequestHandler(next)
+GetHandler::GetHandler(HttpRequestPtr request)
+    :m_request(request)
 {}
 
-bool GetHandler::CanHandle(HttpRequestPtr request)
+bool GetHandler::CanHandle()
 {
-    return (request->request().method() == http::verb::get);
+    return (m_request->request().method() == http::verb::get);
 }
 
-ICommandPtr GetHandler::Handle(HttpRequestPtr request)
+ICommandPtr GetHandler::Handle()
 {
-    return HttpRedirectCommand::Create(request->socketptr(), "https://mail.ru");
+    // TODO: обратиться к микросервису для получения ссылки
+    //IRedirectorPtr m_redirector;
+
+    return SendRedirectCommand::Create(m_request->socketptr(), "https://mail.ru");
 }

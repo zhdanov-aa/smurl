@@ -1,14 +1,14 @@
-#include "HttpNotAllowedCommand.h"
+#include "SendNotAllowedCommand.h"
 #include <boost/beast/http.hpp>
 
 namespace http = boost::beast::http;
 
-HttpNotAllowedCommand::HttpNotAllowedCommand(HttpSocketPtr socket)
+SendNotAllowedCommand::SendNotAllowedCommand(HttpSocketPtr socket)
     :m_socket(socket)
 {
 }
 
-void HttpNotAllowedCommand::Execute()
+void SendNotAllowedCommand::Execute()
 {
     http::response<http::string_body> res;
 

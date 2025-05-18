@@ -1,21 +1,21 @@
 #include "BadRequestHandler.h"
-#include "HttpBadRequestCommand.h"
+#include "SendBadRequestCommand.h"
 
-BadRequestHandler::BadRequestHandler(HttpRequestHandlerPtr next)
-    :HttpRequestHandler(next)
+BadRequestHandler::BadRequestHandler(HttpRequestPtr request)
+    :m_request(request)
 {
 
 }
 
-bool BadRequestHandler::CanHandle(HttpRequestPtr request)
+bool BadRequestHandler::CanHandle()
 {
-    if(!request->error())
+    if(!m_request->error())
         return false;
 
     return true;
 }
 
-ICommandPtr BadRequestHandler::Handle(HttpRequestPtr request)
+ICommandPtr BadRequestHandler::Handle()
 {
-    return HttpBadRequestCommand::Create(request->socketptr());
+    return SendBadRequestCommand::Create(m_request->socketptr());
 }

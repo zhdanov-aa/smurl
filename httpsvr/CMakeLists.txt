@@ -12,9 +12,9 @@ include_directories(../commands)
 
 add_executable(httpsvr main.cpp
     Endpoint.h Endpoint.cpp
-    IHttpRequestHandler.h
+    IRequestHandler.h
     GetHandler.h GetHandler.cpp
-    HttpRequestHandler.h HttpRequestHandler.cpp
+    RequestHandler.h RequestHandler.cpp
     NotAllowedHandler.h NotAllowedHandler.cpp
     ../IoC/IoC.cpp ../IoC/IoC.h
     ../IoC/IocNewScopeCommand.cpp ../IoC/IocNewScopeCommand.h
@@ -31,7 +31,7 @@ add_executable(httpsvr main.cpp
     ../exceptions/RuntimeError.cpp ../exceptions/RuntimeError.h
     ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
-    HttpRequestInterpretCommand.h HttpRequestInterpretCommand.cpp
+    RequestInterpretCommand.h RequestInterpretCommand.cpp
     HttpRequest.h HttpRequest.cpp
     ../interface/IOutputCommandStream.h
     DirectCommandExecutor.h DirectCommandExecutor.cpp
@@ -41,9 +41,12 @@ add_executable(httpsvr main.cpp
     DeleteHttpRequestCommand.h DeleteHttpRequestCommand.cpp
     ../commands/MacroCommand.cpp ../commands/MacroCommand.h
     ../exceptions/CommandException.cpp ../exceptions/CommandException.h
-    HttpBadRequestCommand.h HttpBadRequestCommand.cpp
-    HttpRedirectCommand.h HttpRedirectCommand.cpp
-    HttpNotAllowedCommand.h HttpNotAllowedCommand.cpp)
+    SendBadRequestCommand.h SendBadRequestCommand.cpp
+    SendRedirectCommand.h SendRedirectCommand.cpp
+    SendNotAllowedCommand.h SendNotAllowedCommand.cpp
+    IJsonObject.h
+    HttpRequestJsonObject.h HttpRequestJsonObject.cpp
+    PrintJsonObjectCommand.h PrintJsonObjectCommand.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr

@@ -1,19 +1,19 @@
 #include "NotAllowedHandler.h"
-#include "HttpNotAllowedCommand.h"
+#include "SendNotAllowedCommand.h"
 
 namespace http = boost::beast::http;
 
-NotAllowedHandler::NotAllowedHandler()
-    :HttpRequestHandler(nullptr)
+NotAllowedHandler::NotAllowedHandler(HttpRequestPtr request)
+    :m_request(request)
 {
 }
 
-bool NotAllowedHandler::CanHandle(HttpRequestPtr request)
+bool NotAllowedHandler::CanHandle()
 {
     return true;
 }
 
-ICommandPtr NotAllowedHandler::Handle(HttpRequestPtr request)
+ICommandPtr NotAllowedHandler::Handle()
 {
-    return HttpNotAllowedCommand::Create(request->socketptr());
+    return SendNotAllowedCommand::Create(m_request->socketptr());
 }

@@ -1,21 +1,27 @@
 #ifndef NOTALLOWEDHANDLER_H
 #define NOTALLOWEDHANDLER_H
 
-#include "HttpRequestHandler.h"
+#include "RequestHandler.h"
+#include "HttpRequest.h"
 #include <memory>
 
 class NotAllowedHandler;
 using NotAllowedHandlerPtr = std::shared_ptr<NotAllowedHandler>;
 
-class NotAllowedHandler : public HttpRequestHandler
+class NotAllowedHandler : public RequestHandler
 {
+    HttpRequestPtr m_request;
+
 public:
-    NotAllowedHandler();
+    NotAllowedHandler(HttpRequestPtr request);
 
-    static NotAllowedHandlerPtr Create() { return std::make_shared<NotAllowedHandler>(); }
+    static NotAllowedHandlerPtr Create(HttpRequestPtr request)
+    {
+        return std::make_shared<NotAllowedHandler>(request);
+    }
 
-    bool CanHandle(HttpRequestPtr request) override;
-    ICommandPtr Handle(HttpRequestPtr request) override;
+    bool CanHandle() override;
+    ICommandPtr Handle() override;
 };
 
 #endif // NOTALLOWEDHANDLER_H

@@ -1,4 +1,4 @@
-#include "HttpBadRequestCommand.h"
+#include "SendBadRequestCommand.h"
 //#include <boost/asio.hpp>
 //#include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -6,13 +6,13 @@
 
 namespace http = boost::beast::http;
 
-HttpBadRequestCommand::HttpBadRequestCommand(HttpSocketPtr socket)
+SendBadRequestCommand::SendBadRequestCommand(HttpSocketPtr socket)
     : m_socket(socket)
 {
 
 }
 
-void HttpBadRequestCommand::Execute()
+void SendBadRequestCommand::Execute()
 {
     // Формируем ответ об ошибке
     http::response<http::string_body> res;
