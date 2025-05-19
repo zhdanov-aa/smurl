@@ -23,6 +23,8 @@
 #include "HttpRequestAcceptingObject.h"
 #include "HttpRequestJsonObject.h"
 
+#include "MonolithRedirector.h"
+
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
@@ -132,7 +134,7 @@ void InitIoC()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Http.Redirector.Get",
-        RESOLVER([](){
-            throw new RuntimeError("Http.Redirector.Get not resolved");
+        RESOLVER([]() -> IRedirectorPtr {
+            return MonolithRedirector::Create();
         }))->Execute();
 }

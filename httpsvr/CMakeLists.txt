@@ -47,7 +47,8 @@ add_executable(httpsvr main.cpp
     IJsonObject.h
     HttpRequestJsonObject.h HttpRequestJsonObject.cpp
     PrintJsonObjectCommand.h PrintJsonObjectCommand.cpp
-    IRedirector.h)
+    IRedirector.h
+    MonolithRedirector.h MonolithRedirector.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr
