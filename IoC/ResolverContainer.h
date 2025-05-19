@@ -2,6 +2,7 @@
 #define __RESOLVERCONTAINER_H_INCLUDED__
 
 #include <memory>
+#include <functional>
 #include <IResolverContainer.h>
 
 template<typename ResolverType>
