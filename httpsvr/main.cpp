@@ -75,7 +75,7 @@ void InitIoC()
             static boost::asio::io_context ioc;
             static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
                 std::make_shared<boost::asio::ip::tcp::acceptor>(
-                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8081));
+                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8084));
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
             (*requests)[requestId] = std::make_shared<HttpRequest>(acceptor);
             return requestId;
@@ -84,7 +84,7 @@ void InitIoC()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Endpoint.Request.AcceptingObject.Get",
-        RESOLVER([requests](std::string requestId){
+        RESOLVER([requests](std::string requestId) -> IRequestAcceptingObjectPtr {
             IRequestAcceptingObjectPtr acceptingObject = HttpRequestAcceptingObject::Create(
                 (*requests)[requestId]);
             return acceptingObject;
@@ -102,14 +102,14 @@ void InitIoC()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Endpoint.OutputCommandStream.Get",
-        RESOLVER([](){
+        RESOLVER([]() -> IOutputCommandStreamPtr {
             return DirectCommandExecutor::Create();
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Endpoint.Request.InterpretCommand.Get",
-        RESOLVER([requests](std::string requestId){
+        RESOLVER([requests](std::string requestId)-> ICommandPtr {
             std::vector<ICommandPtr> commands =
                 {
                     PrintJsonObjectCommand::Create(HttpRequestJsonObject::Create((*requests)[requestId])),
@@ -122,7 +122,7 @@ void InitIoC()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Endpoint.Request.Handler.Get",
-        RESOLVER([requests](std::string requestId){
+        RESOLVER([requests](std::string requestId) -> IRequestHandlerPtr {
             RequestHandlerPtr handler = BadRequestHandler::Create((*requests)[requestId]);
             handler->SetNext(GetHandler::Create((*requests)[requestId]))
                 ->SetNext(NotAllowedHandler::Create((*requests)[requestId]));

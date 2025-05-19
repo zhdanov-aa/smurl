@@ -1,4 +1,6 @@
 #include "HttpRequestJsonObject.h"
+#include <boost/json/src.hpp>
+
 
 HttpRequestJsonObject::HttpRequestJsonObject(HttpRequestPtr request)
     : m_request(request)
@@ -7,29 +9,24 @@ HttpRequestJsonObject::HttpRequestJsonObject(HttpRequestPtr request)
 
 JsonPtr HttpRequestJsonObject::getJson()
 {
-    JsonPtr root = std::make_shared<Json>();
+    auto req = m_request->request();
+    boost::json::object obj = boost::json::object();
 
-    // Добавляем метод запроса
-    root->put("method", m_request->request().method_string());
-
-    // Добавляем URI
-    root->put("uri", m_request->request().target());
-
-    // Добавляем версию HTTP
-    root->put("version", std::to_string(m_request->request().version()));
+    // Добавляем основные поля
+    obj.emplace("method", req.method_string());
+    obj.emplace("target", req.target());
+    obj.emplace("version", req.version());
+    obj.emplace("body", req.body());
 
     // Сериализуем заголовки
-    // Json headers;
-    // for(auto& h : m_request->request()/*.base().headers()*/) {
-    //     headers.put(
-    //         std::to_string(h.name_string()),
-    //         std::to_string(h.value())
-    //         );
-    // }
-    // root->add_child("headers", headers);
+    boost::json::array headers = boost::json::array();
+    for (const auto& header : req) {
+        boost::json::object header_obj = boost::json::object();
+        header_obj.emplace("name", header.name_string());
+        header_obj.emplace("value", header.value());
+        headers.push_back(header_obj);
+    }
+    obj.emplace("headers", std::move(headers));
 
-    // Добавляем тело запроса
-    root->put("body", m_request->request().body());
-
-    return root;
+    return std::make_shared<boost::json::object>(obj);
 }
