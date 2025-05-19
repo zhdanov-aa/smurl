@@ -141,16 +141,14 @@ void InitIoC()
                                   return handler;
                               })))->Execute();
 
-    IoC::Resolve<ICommandPtr>("IoC.Register",
-
-                              "Http.Redirector.Get",
-
-                              make_container(std::function<IRedirectorPtr()>([](){
-                                  //RequestHandlerPtr handler = BadRequestHandler::Create((*requests)[requestId]);
-                                  //handler->SetNext(GetHandler::Create((*requests)[requestId]))
-                                  //    ->SetNext(NotAllowedHandler::Create((*requests)[requestId]));
-                                  //return handler;
-                                  throw new RuntimeError("Http.Redirector.Get not resolved");
-                              })))->Execute();
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register", "Http.Redirector.Get",
+            RESOLVER([](){
+                //RequestHandlerPtr handler = BadRequestHandler::Create((*requests)[requestId]);
+                //handler->SetNext(GetHandler::Create((*requests)[requestId]))
+                //    ->SetNext(NotAllowedHandler::Create((*requests)[requestId]));
+                //return handler;
+                throw new RuntimeError("Http.Redirector.Get not resolved");
+            }))->Execute();
 
 }

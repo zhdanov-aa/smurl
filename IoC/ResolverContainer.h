@@ -20,4 +20,11 @@ IResolverContainerPtr make_container(ResolverFuncPrototype resolver)
         std::make_shared<ResolverContainer<ResolverFuncPrototype>>(resolver));
 }
 
+template<typename F>
+IResolverContainerPtr RESOLVER(F&& lambda)
+{
+    auto func = std::function(lambda);
+    return std::make_shared<ResolverContainer<decltype(func)>>(func);
+}
+
 #endif
