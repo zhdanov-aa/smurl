@@ -1,5 +1,8 @@
 #include "GetHandler.h"
 #include "SendRedirectCommand.h"
+#include "IRedirector.h"
+#include "HttpRequestJsonObject.h"
+#include "IoC.h"
 #include <stdexcept>
 
 namespace http = boost::beast::http;
@@ -15,8 +18,8 @@ bool GetHandler::CanHandle()
 
 ICommandPtr GetHandler::Handle()
 {
-    // TODO: обратиться к микросервису для получения ссылки
-    //IRedirectorPtr m_redirector;
+    auto redirector = IoC::Resolve<IRedirectorPtr>("Http.Redirector.Get");
+    auto newLoaction = redirector->Redirect(HttpRequestJsonObject::Create(m_request));
 
-    return SendRedirectCommand::Create(m_request->socketptr(), "https://mail.ru");
+    return SendRedirectCommand::Create(m_request->socketptr(), newLoaction);
 }
