@@ -14,7 +14,7 @@ class IRules
 {
 public:
     virtual ~IRules() = default;
-    virtual string Conclude(IJsonObjectPtr jsonObject) = 0;
+    virtual string Conclude() = 0;
 };
 
 #endif // IRULES_H

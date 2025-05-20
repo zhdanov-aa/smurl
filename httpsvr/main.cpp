@@ -17,6 +17,7 @@
 
 #include "IRequestAcceptingObject.h"
 #include "IJsonObject.h"
+#include "IRules.h"
 
 #include "RuntimeError.h"
 
@@ -134,7 +135,14 @@ void InitIoC()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Http.Redirector.Get",
-        RESOLVER([]() -> IRedirectorPtr {
-            return MonolithRedirector::Create();
+        RESOLVER([](IJsonObjectPtr jsonObject) -> IRedirectorPtr {
+            return MonolithRedirector::Create(jsonObject);
+        }))->Execute();
+
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
+        "Http.Rules.Get",
+        RESOLVER([](IJsonObjectPtr request) -> IRulesPtr {
+            // TODO:
         }))->Execute();
 }

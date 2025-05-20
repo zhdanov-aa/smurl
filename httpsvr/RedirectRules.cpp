@@ -13,7 +13,7 @@ RedirectRulesPtr RedirectRules::SetNext(RedirectRulesPtr next)
     return next;
 }
 
-string RedirectRules::Conclude(IJsonObjectPtr jsonObject)
+string RedirectRules::Conclude()
 {
     try
     {
@@ -25,6 +25,6 @@ string RedirectRules::Conclude(IJsonObjectPtr jsonObject)
         delete exception;
         if (m_next == nullptr)
             throw new RuntimeError("RedirectRules::Conclude(): m_next is nullptr");
-        return m_next->Conclude(jsonObject);
+        return m_next->Conclude();
     }
 }

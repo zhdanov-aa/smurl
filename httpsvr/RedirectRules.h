@@ -27,7 +27,7 @@ public:
 
     RedirectRulesPtr SetNext(RedirectRulesPtr next);
 
-    string Conclude(IJsonObjectPtr jsonObject) override;
+    string Conclude() override;
 };
 
 #endif // REDIRECTRULES_H

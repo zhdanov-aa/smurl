@@ -3,6 +3,8 @@
 #include "IRedirector.h"
 #include "HttpRequestJsonObject.h"
 #include "IoC.h"
+#include "IException.h"
+#include "SendNotAllowedCommand.h"
 #include <stdexcept>
 
 namespace http = boost::beast::http;
@@ -18,8 +20,18 @@ bool GetHandler::CanHandle()
 
 ICommandPtr GetHandler::Handle()
 {
-    auto redirector = IoC::Resolve<IRedirectorPtr>("Http.Redirector.Get");
-    auto newLoaction = redirector->Redirect(HttpRequestJsonObject::Create(m_request));
+    auto redirector = IoC::Resolve<IRedirectorPtr>(
+        "Http.Redirector.Get",
+        std::static_pointer_cast<IJsonObject>(HttpRequestJsonObject::Create(m_request)));
 
-    return SendRedirectCommand::Create(m_request->socketptr(), newLoaction);
+    try
+    {
+        auto newLoaction = redirector->GetLocation();
+        return SendRedirectCommand::Create(m_request->socketptr(), newLoaction);
+    }
+    catch(IException *exception)
+    {
+        delete exception;
+        return SendNotAllowedCommand::Create(m_request->socketptr());
+    }
 }

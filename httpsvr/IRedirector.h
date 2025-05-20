@@ -9,7 +9,7 @@ class IRedirector
 {
 public:
     virtual ~IRedirector() = default;
-    virtual std::string Redirect(IJsonObjectPtr jsonObject) = 0;
+    virtual std::string GetLocation() = 0;
 };
 
 using IRedirectorPtr = std::shared_ptr<IRedirector>;

@@ -2,14 +2,15 @@
 #include "IoC.h"
 #include "IRules.h"
 
-MonolithRedirector::MonolithRedirector() {}
-
-
-std::string MonolithRedirector::Redirect(IJsonObjectPtr jsonObject)
+MonolithRedirector::MonolithRedirector(IJsonObjectPtr jsonObject)
+    :m_jsonObject(jsonObject)
 {
-    // auto json = jsonObject->getJson();
-    // auto rules = IoC::Resolver<IRulesPtr>("Redirector.Rules.Get", json->at("traget"));
-    // return rules->Conclude(jsonObject);
+}
 
-    return "https://mail.ru";
+std::string MonolithRedirector::GetLocation()
+{
+    return IoC::Resolve<IRulesPtr>(
+               "Redirector.Rules.Get",
+               m_jsonObject
+               )->Conclude();
 }
