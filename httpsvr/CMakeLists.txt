@@ -50,7 +50,9 @@ add_executable(httpsvr main.cpp
     IRedirector.h
     MonolithRedirector.h MonolithRedirector.cpp
     IRules.h
-    RedirectRules.h RedirectRules.cpp)
+    RedirectRules.h RedirectRules.cpp
+    ICondition.h
+    CheckConditionCommand.h CheckConditionCommand.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr
