@@ -29,5 +29,5 @@ JsonPtr HttpRequestJsonObject::getJson()
     }
     obj.emplace("headers", std::move(headers));
 
-    return std::make_shared<boost::json::object>(obj);
+    return std::make_shared<Json>(obj);
 }

@@ -64,6 +64,21 @@ void InitIoC()
 {
     auto requests = std::make_shared<std::map<std::string, HttpRequestPtr>>();
 
+    std::string json_str = R"(
+    {
+        "name": "Иван",
+        "age": 30,
+        "is_active": true,
+        "address": {
+            "city": "Москва",
+            "street": "Ленина"
+        },
+        "phones": ["777-1234", "777-5678"]
+    }
+    )";
+
+    JsonPtr jsonRules = std::make_shared<Json>(boost::json::parse(json_str));
+
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Endpoint.Alive.Get",

@@ -10,7 +10,7 @@ class IJsonObject;
 using IJsonObjectPtr = std::shared_ptr<IJsonObject>;
 
 //using Json = boost::property_tree::ptree;
-using Json = boost::json::object;
+using Json = boost::json::value;
 using JsonPtr = std::shared_ptr<Json>;
 
 class IJsonObject
