@@ -8,7 +8,7 @@ class ICondition
 {
 public:
     virtual ~ICondition() = default;
-    virtual bool Check(JsonPtr json);
+    virtual bool Check(JsonPtr json) = 0;
 };
 
 using IConditionPtr = std::shared_ptr<ICondition>;

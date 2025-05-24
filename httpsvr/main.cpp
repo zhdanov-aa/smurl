@@ -26,6 +26,10 @@
 
 #include "MonolithRedirector.h"
 
+#include "RedirectRules.h"
+#include "CheckConditionCommand.h"
+#include "Condition.h"
+
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid_generators.hpp>
@@ -66,14 +70,20 @@ void InitIoC()
 
     std::string json_str = R"(
     {
-        "name": "Иван",
-        "age": 30,
-        "is_active": true,
-        "address": {
-            "city": "Москва",
-            "street": "Ленина"
-        },
-        "phones": ["777-1234", "777-5678"]
+        "/search": [
+            {
+                "location": "http://mail.ru",
+                "conditions": {
+                    "before": "2025-05-25 11:20"
+                }
+
+            },
+            {
+                "location": "http://google.ru",
+                "conditions": {
+                }
+            }
+        ]
     }
     )";
 
@@ -93,7 +103,7 @@ void InitIoC()
             static boost::asio::io_context ioc;
             static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
                 std::make_shared<boost::asio::ip::tcp::acceptor>(
-                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8085));
+                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8088));
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
             (*requests)[requestId] = std::make_shared<HttpRequest>(acceptor);
             return requestId;
@@ -156,8 +166,49 @@ void InitIoC()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Http.Rules.Get",
-        RESOLVER([](IJsonObjectPtr request) -> IRulesPtr {
-            // TODO:
+        "Redirector.Rules.Get",
+        RESOLVER([jsonRules](IJsonObjectPtr request) -> IRulesPtr {
+            RedirectRulesPtr first = nullptr, last = nullptr;
+            auto json = request->getJson();
+            auto target = json->at("target").as_string();
+            boost::json::value v;
+            if (jsonRules->as_object().contains(target))
+            {
+                auto rules = jsonRules->as_object().at(target).as_array();
+                for (auto it = rules.begin(); it != rules.end(); ++it)
+                {
+                    auto location = it->at("location").as_string().c_str();
+
+                    auto conditions = it->at("conditions").as_object();
+                    std::vector<ICommandPtr> commands;
+                    for (const auto& keyValue : conditions)
+                    {
+                        commands.push_back(
+                            CheckConditionCommand::Create(
+                                // Condition::Create(key.as_string().c_str(), value.as_string().c_str()),
+                                Condition::Create(keyValue.key_c_str(), keyValue.value().as_string().c_str()),
+                                json
+                                ));
+                    }
+
+                    // ICommandPtr macroCommand;
+                    // if (!commands.empty())
+                    // {
+                    //     macroCommand = MacroCommand::Create(commands);
+                    // }
+
+                    auto newRule = RedirectRules::Create(location, MacroCommand::Create(commands));
+
+                    if (first == nullptr)
+                    {
+                        first = last = newRule;
+                    }
+                    else
+                    {
+                        last = last->SetNext(newRule);
+                    }
+                }
+            }
+            return first;
         }))->Execute();
 }

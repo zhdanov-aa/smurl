@@ -15,6 +15,12 @@ class CheckConditionCommand : public ICommand
 
 public:
     CheckConditionCommand(IConditionPtr condition, JsonPtr json);
+
+    static CheckConditionCommandPtr Create(IConditionPtr condition, JsonPtr json)
+    {
+        return std::make_shared<CheckConditionCommand>(condition, json);
+    }
+
     void Execute() override;
 };
 

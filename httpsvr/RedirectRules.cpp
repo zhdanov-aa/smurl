@@ -15,6 +15,11 @@ RedirectRulesPtr RedirectRules::SetNext(RedirectRulesPtr next)
 
 string RedirectRules::Conclude()
 {
+    if (m_condition == nullptr)
+    {
+        return m_conclusion;
+    }
+
     try
     {
         m_condition->Execute();
