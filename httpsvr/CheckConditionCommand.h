@@ -2,23 +2,25 @@
 #define CHECKCONDITIONCOMMAND_H
 
 #include "ICommand.h"
-#include "ICondition.h"
+#include "IJsonObject.h"
 #include <memory>
+#include <string>
 
 class CheckConditionCommand;
 using CheckConditionCommandPtr = std::shared_ptr<CheckConditionCommand>;
 
 class CheckConditionCommand : public ICommand
 {
-    IConditionPtr m_condition;
-    JsonPtr m_json;
+    std::string m_condition;
+    std::string m_parameter;
+    JsonPtr m_request;
 
 public:
-    CheckConditionCommand(IConditionPtr condition, JsonPtr json);
+    CheckConditionCommand(std::string condition, std::string parameter, JsonPtr request);
 
-    static CheckConditionCommandPtr Create(IConditionPtr condition, JsonPtr json)
+    static CheckConditionCommandPtr Create(std::string condition, std::string parameter, JsonPtr request)
     {
-        return std::make_shared<CheckConditionCommand>(condition, json);
+        return std::make_shared<CheckConditionCommand>(condition, parameter, request);
     }
 
     void Execute() override;

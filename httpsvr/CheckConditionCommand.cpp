@@ -1,14 +1,18 @@
 #include "CheckConditionCommand.h"
+#include "ICondition.h"
 #include "RuntimeError.h"
+#include "IoC.h"
 
-CheckConditionCommand::CheckConditionCommand(IConditionPtr condition, JsonPtr json)
-    :m_condition(condition), m_json(json)
+CheckConditionCommand::CheckConditionCommand(std::string condition, std::string parameter, JsonPtr request)
+    :m_condition(condition), m_parameter(parameter), m_request(request)
 {}
 
 
 void CheckConditionCommand::Execute()
 {
-    if (!m_condition->Check(m_json))
+    auto conditionObject = IoC::Resolve<IConditionPtr>("Condition.Get", m_condition, m_parameter);
+
+    if (!conditionObject->Check(m_request))
     {
         throw new RuntimeError("CheckConditionCommand::Execute(): checking failed");
     }

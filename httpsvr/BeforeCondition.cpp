@@ -1,4 +1,4 @@
-#include "Condition.h"
+#include "BeforeCondition.h"
 #include <string>
 #include <ctime>
 #include <cstring>
@@ -47,18 +47,12 @@ bool isBeforeCurrentTime(const std::string& m_date) {
     return input_time > current_time;
 }
 
-Condition::Condition(std::string condition, std::string value)
-    :m_condition(condition), m_value(value)
+BeforeCondition::BeforeCondition(std::string parameter)
+    :m_parameter(parameter)
 {
 }
 
-bool Condition::Check(JsonPtr json)
+bool BeforeCondition::Check(JsonPtr json)
 {
-    if (m_condition == "before")
-    {
-        auto result = isBeforeCurrentTime(m_value);
-        return result;
-    }
-
-    return false;
+    return isBeforeCurrentTime(m_parameter);
 }

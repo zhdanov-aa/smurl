@@ -53,7 +53,7 @@ add_executable(httpsvr main.cpp
     RedirectRules.h RedirectRules.cpp
     ICondition.h
     CheckConditionCommand.h CheckConditionCommand.cpp
-    Condition.h Condition.cpp)
+    BeforeCondition.h BeforeCondition.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr

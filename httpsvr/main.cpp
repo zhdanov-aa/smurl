@@ -28,7 +28,7 @@
 
 #include "RedirectRules.h"
 #include "CheckConditionCommand.h"
-#include "Condition.h"
+#include "BeforeCondition.h"
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -85,7 +85,7 @@ void InitIoC()
         {
             "http://mail.ru":
             {
-                "before": "2025-05-25 11:20"
+                "before": "2025-05-24 13:20"
             },
 
             "http://google.ru":
@@ -117,7 +117,7 @@ void InitIoC()
             static boost::asio::io_context ioc;
             static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
                 std::make_shared<boost::asio::ip::tcp::acceptor>(
-                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8091));
+                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8093));
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
             (*requests)[requestId] = std::make_shared<HttpRequest>(acceptor);
             return requestId;
@@ -200,12 +200,12 @@ void InitIoC()
 
                     // Итаерация по командам
                     std::vector<ICommandPtr> commands;
-                    for (const auto& keyValue : ruleDesc.value().as_object())
+                    for (const auto& conditionDesc : ruleDesc.value().as_object())
                     {
                         commands.push_back(
                             CheckConditionCommand::Create(
-                                // Condition::Create(key.as_string().c_str(), value.as_string().c_str()),
-                                Condition::Create(keyValue.key_c_str(), keyValue.value().as_string().c_str()),
+                                conditionDesc.key_c_str(),
+                                conditionDesc.value().as_string().c_str(),
                                 json
                                 ));
                     }
@@ -223,5 +223,17 @@ void InitIoC()
                 }
             }
             return firstRule;
+        }))->Execute();
+
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
+        "Condition.Get",
+        RESOLVER([](std::string condition, std::string parameter) -> IConditionPtr {
+            // TODO: загрузка плагинов
+            if (condition == "before")
+            {
+                return BeforeCondition::Create(parameter);
+            }
+            return nullptr;
         }))->Execute();
 }
