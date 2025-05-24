@@ -4,7 +4,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include <iostream>
+// #include <iostream>
 
 bool isBeforeCurrentTime(const std::string& m_date) {
     // Проверяем корректность формата строки
@@ -54,14 +54,9 @@ Condition::Condition(std::string condition, std::string value)
 
 bool Condition::Check(JsonPtr json)
 {
-    std::cout << m_condition << " : " << m_value << std::endl;
-
     if (m_condition == "before")
     {
-        return false;
-
         auto result = isBeforeCurrentTime(m_value);
-        std::cout << result << std::endl;
         return result;
     }
 

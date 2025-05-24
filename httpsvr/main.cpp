@@ -39,10 +39,21 @@
 #include <vector>
 #include <iostream>
 
+// void signalHandler(int signal) {
+//     if (signal == SIGINT || signal == SIGTERM) {
+//         //m_exitLoop = true;
+//         //std::cout << "TERM" << std::endl;
+//     }
+// }
+
 void InitIoC();
 
 int main()
 {
+    // Установка обработчика в main()
+    // signal(SIGINT, signalHandler);
+    // signal(SIGTERM, signalHandler);
+
     InitIoC();
 
     try
@@ -70,20 +81,23 @@ void InitIoC()
 
     std::string json_str = R"(
     {
-        "/search": [
+        "/search":
+        {
+            "http://mail.ru":
             {
-                "location": "http://mail.ru",
-                "conditions": {
-                    "before": "2025-05-25 11:20"
-                }
-
+                "before": "2025-05-25 11:20"
             },
+
+            "http://google.ru":
             {
-                "location": "http://google.ru",
-                "conditions": {
-                }
             }
-        ]
+        },
+        "/mail":
+        {
+            "http://yandex.ru":
+            {
+            }
+        }
     }
     )";
 
@@ -103,7 +117,7 @@ void InitIoC()
             static boost::asio::io_context ioc;
             static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
                 std::make_shared<boost::asio::ip::tcp::acceptor>(
-                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8088));
+                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8091));
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
             (*requests)[requestId] = std::make_shared<HttpRequest>(acceptor);
             return requestId;
@@ -168,20 +182,25 @@ void InitIoC()
         "IoC.Register",
         "Redirector.Rules.Get",
         RESOLVER([jsonRules](IJsonObjectPtr request) -> IRulesPtr {
-            RedirectRulesPtr first = nullptr, last = nullptr;
+
+            // Цепочка правил
+            RedirectRulesPtr firstRule = nullptr, lastRule = nullptr;
+
+            // uri запроса
             auto json = request->getJson();
             auto target = json->at("target").as_string();
-            boost::json::value v;
+
+            // если есть праила для запроса
             if (jsonRules->as_object().contains(target))
             {
-                auto rules = jsonRules->as_object().at(target).as_array();
-                for (auto it = rules.begin(); it != rules.end(); ++it)
+                // Итерация по правилам
+                for (const auto& ruleDesc : jsonRules->as_object().at(target).as_object())
                 {
-                    auto location = it->at("location").as_string().c_str();
+                    auto location = ruleDesc.key_c_str();
 
-                    auto conditions = it->at("conditions").as_object();
+                    // Итаерация по командам
                     std::vector<ICommandPtr> commands;
-                    for (const auto& keyValue : conditions)
+                    for (const auto& keyValue : ruleDesc.value().as_object())
                     {
                         commands.push_back(
                             CheckConditionCommand::Create(
@@ -191,24 +210,18 @@ void InitIoC()
                                 ));
                     }
 
-                    // ICommandPtr macroCommand;
-                    // if (!commands.empty())
-                    // {
-                    //     macroCommand = MacroCommand::Create(commands);
-                    // }
-
                     auto newRule = RedirectRules::Create(location, MacroCommand::Create(commands));
 
-                    if (first == nullptr)
+                    if (firstRule == nullptr)
                     {
-                        first = last = newRule;
+                        firstRule = lastRule = newRule;
                     }
                     else
                     {
-                        last = last->SetNext(newRule);
+                        lastRule = lastRule->SetNext(newRule);
                     }
                 }
             }
-            return first;
+            return firstRule;
         }))->Execute();
 }
