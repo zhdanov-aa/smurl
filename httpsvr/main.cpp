@@ -15,13 +15,12 @@
 #include "IOutputCommandStream.h"
 #include "DirectCommandExecutor.h"
 
-#include "IRequestAcceptingObject.h"
 #include "IJsonObject.h"
 #include "IRules.h"
 
 #include "RuntimeError.h"
 
-#include "HttpRequestAcceptingObject.h"
+#include "HttpRequestAcceptor.h"
 #include "HttpRequestJsonObject.h"
 
 #include "MonolithRedirector.h"
@@ -39,32 +38,20 @@
 #include <vector>
 #include <iostream>
 
-// void signalHandler(int signal) {
-//     if (signal == SIGINT || signal == SIGTERM) {
-//         //m_exitLoop = true;
-//         //std::cout << "TERM" << std::endl;
-//     }
-// }
-
 void InitIoC();
 
 int main()
 {
-    // Установка обработчика в main()
-    // signal(SIGINT, signalHandler);
-    // signal(SIGTERM, signalHandler);
-
     InitIoC();
+
+    Endpoint svr(
+        HttpRequestAcceptor::Create(8080),
+        DirectCommandExecutor::Create()
+        );
 
     try
     {
-        Endpoint svr;
         svr.EventLoop();
-    }
-    catch(std::exception& e)
-    {
-        std::cerr << "Ошибка: " << e.what() << std::endl;
-        return EXIT_FAILURE;
     }
     catch(IException *e)
     {
@@ -72,6 +59,7 @@ int main()
         delete e;
         return EXIT_FAILURE;
     }
+
     return EXIT_SUCCESS;
 }
 
@@ -105,31 +93,11 @@ void InitIoC()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Endpoint.Alive.Get",
-        RESOLVER([](){
-            return true;
-        }))->Execute();
-
-    IoC::Resolve<ICommandPtr>(
-        "IoC.Register",
-        "Endpoint.Request.New",
-        RESOLVER([requests](){
-            static boost::asio::io_context ioc;
-            static std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor =
-                std::make_shared<boost::asio::ip::tcp::acceptor>(
-                    ioc, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), 8093));
+        "Http.Request.New",
+        RESOLVER([requests](HttpRequestPtr nr){
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
-            (*requests)[requestId] = std::make_shared<HttpRequest>(acceptor);
+            (*requests)[requestId] = nr;
             return requestId;
-        }))->Execute();
-
-    IoC::Resolve<ICommandPtr>(
-        "IoC.Register",
-        "Endpoint.Request.AcceptingObject.Get",
-        RESOLVER([requests](std::string requestId) -> IRequestAcceptingObjectPtr {
-            IRequestAcceptingObjectPtr acceptingObject = HttpRequestAcceptingObject::Create(
-                (*requests)[requestId]);
-            return acceptingObject;
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(
@@ -139,13 +107,6 @@ void InitIoC()
             IJsonObjectPtr jsonObject = HttpRequestJsonObject::Create(
                 (*requests)[requestId]);
             return jsonObject;
-        }))->Execute();
-
-    IoC::Resolve<ICommandPtr>(
-        "IoC.Register",
-        "Endpoint.OutputCommandStream.Get",
-        RESOLVER([]() -> IOutputCommandStreamPtr {
-            return DirectCommandExecutor::Create();
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(

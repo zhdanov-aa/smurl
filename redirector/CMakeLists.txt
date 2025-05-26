@@ -13,7 +13,6 @@ include_directories(../endpoint)
 
 add_executable(redirector main.cpp
     ../endpoint/Endpoint.h ../endpoint/Endpoint.cpp
-    ../endpoint/IRequestAcceptingObject.h
     ../IoC/IoC.cpp ../IoC/IoC.h
     ../IoC/IocNewScopeCommand.cpp ../IoC/IocNewScopeCommand.h
     ../IoC/IocRegisterCommand.cpp ../IoC/IocRegisterCommand.h

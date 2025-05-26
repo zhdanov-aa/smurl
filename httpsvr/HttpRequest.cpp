@@ -1,9 +1,7 @@
 #include "HttpRequest.h"
 
-HttpRequest::HttpRequest(std::shared_ptr<boost::asio::ip::tcp::acceptor> acceptor)
-    :m_acceptor(acceptor)
+HttpRequest::HttpRequest()
 {
-    m_socket = std::make_shared<boost::asio::ip::tcp::socket>(m_acceptor->get_executor());
 }
 
 HttpRequest::~HttpRequest()
