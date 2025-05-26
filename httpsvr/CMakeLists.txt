@@ -9,9 +9,11 @@ include_directories(../IoC)
 include_directories(../exceptions)
 include_directories(../interface)
 include_directories(../commands)
+include_directories(../endpoint)
 
 add_executable(httpsvr main.cpp
-    Endpoint.h Endpoint.cpp
+    ../endpoint/Endpoint.h ../endpoint/Endpoint.cpp
+    ../endpoint/IRequestAcceptingObject.h
     IRequestHandler.h
     GetHandler.h GetHandler.cpp
     RequestHandler.h RequestHandler.cpp
@@ -36,7 +38,6 @@ add_executable(httpsvr main.cpp
     ../interface/IOutputCommandStream.h
     DirectCommandExecutor.h DirectCommandExecutor.cpp
     BadRequestHandler.h BadRequestHandler.cpp
-    IRequestAcceptingObject.h
     HttpRequestAcceptingObject.h HttpRequestAcceptingObject.cpp
     DeleteHttpRequestCommand.h DeleteHttpRequestCommand.cpp
     ../commands/MacroCommand.cpp ../commands/MacroCommand.h

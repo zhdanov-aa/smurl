@@ -1,6 +1,7 @@
 #include "InitializeCommand.h"
 #include "IException.h"
 #include "Endpoint.h"
+#include <iostream>
 
 int main()
 {
