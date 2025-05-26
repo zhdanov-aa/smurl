@@ -12,7 +12,11 @@ include_directories(../commands)
 include_directories(../endpoint)
 
 add_executable(redirector main.cpp
+
     ../endpoint/Endpoint.h ../endpoint/Endpoint.cpp
+    ../endpoint/IMessageQueue.h
+    ../endpoint/DirectCommandExecutor.cpp ../endpoint/DirectCommandExecutor.h
+
     ../IoC/IoC.cpp ../IoC/IoC.h
     ../IoC/IocNewScopeCommand.cpp ../IoC/IocNewScopeCommand.h
     ../IoC/IocRegisterCommand.cpp ../IoC/IocRegisterCommand.h
@@ -25,9 +29,14 @@ add_executable(redirector main.cpp
     ../IoC/Scope.cpp ../IoC/Scope.h
     ../IoC/ScopeChangerAdapter.cpp ../IoC/ScopeChangerAdapter.h
     ../IoC/ScopeContainer.cpp ../IoC/ScopeContainer.h
+
     ../exceptions/RuntimeError.cpp ../exceptions/RuntimeError.h
-    ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
+
+    ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
+
     ../interface/IException.h
     ../interface/ICommand.h
-    InitializeCommand.cpp InitializeCommand.h)
+
+    InitializeCommand.cpp InitializeCommand.h
+    UdpRequestAcceptor.h UdpRequestAcceptor.cpp)

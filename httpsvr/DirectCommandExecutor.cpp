@@ -5,5 +5,8 @@ DirectCommandExecutor::DirectCommandExecutor() {}
 
 void DirectCommandExecutor::Write(ICommandPtr command)
 {
-    command->Execute();
+    if (command != nullptr)
+    {
+        command->Execute();
+    }
 }

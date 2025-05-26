@@ -13,6 +13,6 @@ void Endpoint::EventLoop()
     {
         auto requestId = m_mq->GetMessage();
 
-        m_cs->Write(IoC::Resolve<ICommandPtr>("Endpoint.Request.InterpretCommand.Get", requestId));
+        m_cs->Write(IoC::Resolve<ICommandPtr>("Message.InterpretCommand.Get", requestId));
     }
 }

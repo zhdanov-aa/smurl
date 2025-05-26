@@ -102,16 +102,7 @@ void InitIoC()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Endpoint.Request.JsonObject.Get",
-        RESOLVER([requests](std::string requestId){
-            IJsonObjectPtr jsonObject = HttpRequestJsonObject::Create(
-                (*requests)[requestId]);
-            return jsonObject;
-        }))->Execute();
-
-    IoC::Resolve<ICommandPtr>(
-        "IoC.Register",
-        "Endpoint.Request.InterpretCommand.Get",
+        "Message.InterpretCommand.Get",
         RESOLVER([requests](std::string requestId)-> ICommandPtr {
             std::vector<ICommandPtr> commands =
                 {
@@ -120,6 +111,15 @@ void InitIoC()
                     DeleteHttpRequestCommand::Create(requests, requestId)
                 };
             return MacroCommand::Create(commands);
+        }))->Execute();
+
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
+        "Endpoint.Request.JsonObject.Get",
+        RESOLVER([requests](std::string requestId){
+            IJsonObjectPtr jsonObject = HttpRequestJsonObject::Create(
+                (*requests)[requestId]);
+            return jsonObject;
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(
