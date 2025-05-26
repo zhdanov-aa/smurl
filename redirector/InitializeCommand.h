@@ -11,6 +11,12 @@ class InitializeCommand: public ICommand
 {
 public:
     InitializeCommand();
+    
+    static InitializeCommandPtr Create()
+    {
+        return std::make_shared<InitializeCommand>();
+    }
+
     void Execute() override;
 };
 

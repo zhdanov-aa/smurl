@@ -26,4 +26,6 @@ add_executable(redirector main.cpp
     ../exceptions/RuntimeError.cpp ../exceptions/RuntimeError.h
     ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
+    ../interface/IException.h
+    ../interface/ICommand.h
     InitializeCommand.cpp InitializeCommand.h)
