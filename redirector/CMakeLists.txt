@@ -10,7 +10,7 @@ include_directories(../exceptions)
 include_directories(../interface)
 include_directories(../commands)
 
-add_executable(redirector
+add_executable(redirector main.cpp
     ../IoC/IoC.cpp ../IoC/IoC.h
     ../IoC/IocNewScopeCommand.cpp ../IoC/IocNewScopeCommand.h
     ../IoC/IocRegisterCommand.cpp ../IoC/IocRegisterCommand.h
@@ -25,4 +25,5 @@ add_executable(redirector
     ../IoC/ScopeContainer.cpp ../IoC/ScopeContainer.h
     ../exceptions/RuntimeError.cpp ../exceptions/RuntimeError.h
     ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
-    ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h)
+    ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
+    InitializeCommand.cpp InitializeCommand.h)
