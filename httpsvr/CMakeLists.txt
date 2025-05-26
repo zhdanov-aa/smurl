@@ -14,6 +14,8 @@ include_directories(../endpoint)
 add_executable(httpsvr main.cpp
     ../endpoint/Endpoint.h ../endpoint/Endpoint.cpp
     ../endpoint/IMessageQueue.h
+    ../endpoint/DirectCommandExecutor.h ../endpoint/DirectCommandExecutor.cpp
+
     IRequestHandler.h
     GetHandler.h GetHandler.cpp
     RequestHandler.h RequestHandler.cpp
@@ -36,7 +38,6 @@ add_executable(httpsvr main.cpp
     RequestInterpretCommand.h RequestInterpretCommand.cpp
     HttpRequest.h HttpRequest.cpp
     ../interface/IOutputCommandStream.h
-    DirectCommandExecutor.h DirectCommandExecutor.cpp
     BadRequestHandler.h BadRequestHandler.cpp
 
     DeleteHttpRequestCommand.h DeleteHttpRequestCommand.cpp

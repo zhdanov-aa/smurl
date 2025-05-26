@@ -1,8 +1,14 @@
 #include "UdpRequestAcceptor.h"
 
-UdpRequestAcceptor::UdpRequestAcceptor(unsigned short port) {}
+UdpRequestAcceptor::UdpRequestAcceptor(unsigned short port)
+{
+
+}
 
 
 string UdpRequestAcceptor::GetMessage()
 {
+    // TODO:
+
+    return "";
 }

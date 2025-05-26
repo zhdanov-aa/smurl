@@ -39,4 +39,5 @@ add_executable(redirector main.cpp
     ../interface/ICommand.h
 
     InitializeCommand.cpp InitializeCommand.h
-    UdpRequestAcceptor.h UdpRequestAcceptor.cpp)
+    UdpRequestAcceptor.h UdpRequestAcceptor.cpp
+    UdpRequestData.h UdpRequestData.cpp)
