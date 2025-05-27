@@ -1,3 +1,6 @@
 #include "UdpRequestData.h"
 
-UdpRequestData::UdpRequestData() {}
+UdpRequestData::UdpRequestData()
+    :m_buffer(1024)
+{
+}

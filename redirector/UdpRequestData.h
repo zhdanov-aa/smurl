@@ -17,6 +17,9 @@ public:
     {
         return make_shared<UdpRequestData>();
     }
+        
+    boost::asio::mutable_buffer m_buffer;
+    udp::endpoint m_senderEndpoint;
 };
 
 #endif // UDPREQUESTDATA_H

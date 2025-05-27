@@ -20,7 +20,7 @@ void InitializeCommand::Execute()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Udp.Request.New",
+        "Udp.Request.Register",
         RESOLVER([requests](UdpRequestDataPtr nr){
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
             (*requests)[requestId] = nr;
