@@ -1,6 +1,7 @@
 #include "InitializeCommand.h"
 #include "IoC.h"
 #include "UdpRequestData.h"
+#include "DeleteRequestCommand.h"
 
 #include <memory>
 #include <map>
@@ -31,13 +32,13 @@ void InitializeCommand::Execute()
         "IoC.Register",
         "Message.InterpretCommand.Get",
         RESOLVER([requests](std::string requestId)-> ICommandPtr {
-            // std::vector<ICommandPtr> commands =
-            //     {
-            //         PrintJsonObjectCommand::Create(HttpRequestJsonObject::Create((*requests)[requestId])),
-            //         RequestInterpretCommand::Create(requestId),
-            //         DeleteHttpRequestCommand::Create(requests, requestId)
-            //     };
-            // return MacroCommand::Create(commands);
+            std::vector<ICommandPtr> commands =
+                {
+                    // PrintJsonObjectCommand::Create(HttpRequestJsonObject::Create((*requests)[requestId])),
+                    // RequestInterpretCommand::Create(requestId),
+                    DeleteRequestCommand::Create(requests, requestId)
+                };
+            return MacroCommand::Create(commands);
             return nullptr;
         }))->Execute();
 }

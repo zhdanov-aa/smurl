@@ -40,4 +40,6 @@ add_executable(redirector main.cpp
 
     InitializeCommand.cpp InitializeCommand.h
     UdpRequestAcceptor.h UdpRequestAcceptor.cpp
-    UdpRequestData.h UdpRequestData.cpp)
+    UdpRequestData.h UdpRequestData.cpp
+    ../commands/MacroCommand.cpp ../commands/MacroCommand.h
+    DeleteRequestCommand.h DeleteRequestCommand.cpp)

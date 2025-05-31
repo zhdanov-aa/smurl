@@ -2,8 +2,11 @@
 #define UDPREQUESTDATA_H
 
 #include <memory>
+#include <boost/asio.hpp>
+#include <boost/asio/ip/udp.hpp>
 
 using namespace std;
+using boost::asio::ip::udp;
 
 class UdpRequestData;
 using UdpRequestDataPtr = shared_ptr<UdpRequestData>;
