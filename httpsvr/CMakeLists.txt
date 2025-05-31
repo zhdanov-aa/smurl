@@ -37,7 +37,10 @@ add_executable(httpsvr main.cpp
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
     RequestInterpretCommand.h RequestInterpretCommand.cpp
     HttpRequest.h HttpRequest.cpp
+
     ../interface/IOutputCommandStream.h
+    ../interface/IJsonObject.h
+
     BadRequestHandler.h BadRequestHandler.cpp
 
     DeleteHttpRequestCommand.h DeleteHttpRequestCommand.cpp
@@ -46,7 +49,6 @@ add_executable(httpsvr main.cpp
     SendBadRequestCommand.h SendBadRequestCommand.cpp
     SendRedirectCommand.h SendRedirectCommand.cpp
     SendNotAllowedCommand.h SendNotAllowedCommand.cpp
-    IJsonObject.h
     HttpRequestJsonObject.h HttpRequestJsonObject.cpp
     PrintJsonObjectCommand.h PrintJsonObjectCommand.cpp
     IRedirector.h

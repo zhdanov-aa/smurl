@@ -32,14 +32,17 @@ add_executable(redirector main.cpp
 
     ../exceptions/RuntimeError.cpp ../exceptions/RuntimeError.h
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
+    ../exceptions/CommandException.cpp ../exceptions/CommandException.h
 
     ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
+    ../commands/MacroCommand.cpp ../commands/MacroCommand.h
 
     ../interface/IException.h
     ../interface/ICommand.h
+    ../interface/IJsonObject.h
 
     InitializeCommand.cpp InitializeCommand.h
     UdpRequestAcceptor.h UdpRequestAcceptor.cpp
     UdpRequestData.h UdpRequestData.cpp
-    ../commands/MacroCommand.cpp ../commands/MacroCommand.h
-    DeleteRequestCommand.h DeleteRequestCommand.cpp)
+    DeleteRequestCommand.h DeleteRequestCommand.cpp
+    RequestJsonObject.h RequestJsonObject.cpp)

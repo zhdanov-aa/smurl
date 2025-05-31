@@ -1,4 +1,5 @@
 #include "InitializeCommand.h"
+#include "MacroCommand.h"
 #include "IoC.h"
 #include "UdpRequestData.h"
 #include "DeleteRequestCommand.h"
