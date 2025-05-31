@@ -3,6 +3,10 @@
 #include "IoC.h"
 #include "UdpRequestData.h"
 #include "DeleteRequestCommand.h"
+#include "IMessageQueue.h"
+#include "UdpRequestAcceptor.h"
+#include "IOutputCommandStream.h"
+#include "DirectCommandExecutor.h"
 
 #include <memory>
 #include <map>
@@ -22,11 +26,16 @@ void InitializeCommand::Execute()
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
-        "Udp.Request.Register",
-        RESOLVER([requests](UdpRequestDataPtr nr){
-            std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
-            (*requests)[requestId] = nr;
-            return requestId;
+        "Message.Queue.Get",
+        RESOLVER([]()-> IMessageQueuePtr {
+            return UdpRequestAcceptor::Create(8085);
+        }))->Execute();
+
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
+        "Message.Handler.CommandStream.Get",
+        RESOLVER([]()-> IOutputCommandStreamPtr {
+            return DirectCommandExecutor::Create();
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(
@@ -42,4 +51,14 @@ void InitializeCommand::Execute()
             return MacroCommand::Create(commands);
             return nullptr;
         }))->Execute();
+
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
+        "Udp.Request.Register",
+        RESOLVER([requests](UdpRequestDataPtr nr){
+            std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
+            (*requests)[requestId] = nr;
+            return requestId;
+        }))->Execute();
+
 }

@@ -1,8 +1,9 @@
+#include "Endpoint.h"
 #include "InitializeCommand.h"
 #include "IException.h"
-#include "Endpoint.h"
-#include "UdpRequestAcceptor.h"
-#include "DirectCommandExecutor.h"
+#include "IMessageQueue.h"
+#include "IOutputCommandStream.h"
+#include "IoC.h"
 #include <iostream>
 
 int main()
@@ -11,8 +12,8 @@ int main()
     initCommand->Execute();
 
     Endpoint svr(
-        UdpRequestAcceptor::Create(8085),
-        DirectCommandExecutor::Create()
+        IoC::Resolve<IMessageQueuePtr>("Message.Queue.Get"),
+        IoC::Resolve<IOutputCommandStreamPtr>("Message.Handler.CommandStream.Get")
         );
 
     try
