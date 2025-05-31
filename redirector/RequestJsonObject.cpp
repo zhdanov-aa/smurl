@@ -1,5 +1,5 @@
 #include "RequestJsonObject.h"
-#include <boost/json.hpp>
+#include <boost/json/src.hpp>
 
 RequestJsonObject::RequestJsonObject(UdpRequestDataPtr requestData)
     :m_requestData(requestData)
@@ -15,8 +15,6 @@ JsonPtr RequestJsonObject::getJson()
     // Создаем строку
     std::string json_string(data, size);
 
-    auto json = boost::json::parse(json_string);
-
     // Парсим JSON
-    return make_shared<Json>(json);
+    return make_shared<Json>(boost::json::parse(json_string));
 }
