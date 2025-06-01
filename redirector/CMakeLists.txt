@@ -36,6 +36,7 @@ add_executable(redirector main.cpp
 
     ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
     ../commands/MacroCommand.cpp ../commands/MacroCommand.h
+    ../commands/PrintJsonObjectCommand.cpp ../commands/PrintJsonObjectCommand.h
 
     ../interface/IException.h
     ../interface/ICommand.h

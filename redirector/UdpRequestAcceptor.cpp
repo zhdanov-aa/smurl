@@ -14,7 +14,7 @@ string UdpRequestAcceptor::GetMessage()
 {
     auto request = UdpRequestData::Create();
 
-    size_t length = m_socket.receive_from(
+    request->m_length = m_socket.receive_from(
         request->m_buffer, request->m_senderEndpoint);
 
     return IoC::Resolve<string>("Udp.Request.Register", request);

@@ -7,6 +7,8 @@
 #include "UdpRequestAcceptor.h"
 #include "IOutputCommandStream.h"
 #include "DirectCommandExecutor.h"
+#include "PrintJsonObjectCommand.h"
+#include "RequestJsonObject.h"
 
 #include <memory>
 #include <map>
@@ -44,7 +46,7 @@ void InitializeCommand::Execute()
         RESOLVER([requests](std::string requestId)-> ICommandPtr {
             std::vector<ICommandPtr> commands =
                 {
-                    // PrintJsonObjectCommand::Create(HttpRequestJsonObject::Create((*requests)[requestId])),
+                    PrintJsonObjectCommand::Create(RequestJsonObject::Create((*requests)[requestId])),
                     // RequestInterpretCommand::Create(requestId),
                     DeleteRequestCommand::Create(requests, requestId)
                 };

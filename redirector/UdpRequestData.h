@@ -13,6 +13,8 @@ using UdpRequestDataPtr = shared_ptr<UdpRequestData>;
 
 class UdpRequestData
 {
+    char m_data[1024];
+
 public:
     UdpRequestData();
 
@@ -22,6 +24,7 @@ public:
     }
         
     boost::asio::mutable_buffer m_buffer;
+    size_t m_length;
     udp::endpoint m_senderEndpoint;
 };
 
