@@ -24,6 +24,7 @@
 #include "HttpRequestJsonObject.h"
 
 #include "MonolithRedirector.h"
+#include "UdpRedirector.h"
 
 #include "RedirectRules.h"
 #include "CheckConditionCommand.h"
@@ -136,7 +137,8 @@ void InitIoC()
         "IoC.Register",
         "Http.Redirector.Get",
         RESOLVER([](IJsonObjectPtr jsonObject) -> IRedirectorPtr {
-            return MonolithRedirector::Create(jsonObject);
+            // return MonolithRedirector::Create(jsonObject);
+            return UdpRedirector::Create(jsonObject);
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(
