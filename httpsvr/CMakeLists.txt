@@ -16,10 +16,6 @@ add_executable(httpsvr main.cpp
     ../endpoint/IMessageQueue.h
     ../endpoint/DirectCommandExecutor.h ../endpoint/DirectCommandExecutor.cpp
 
-    IRequestHandler.h
-    GetHandler.h GetHandler.cpp
-    RequestHandler.h RequestHandler.cpp
-    NotAllowedHandler.h NotAllowedHandler.cpp
     ../IoC/IoC.cpp ../IoC/IoC.h
     ../IoC/IocNewScopeCommand.cpp ../IoC/IocNewScopeCommand.h
     ../IoC/IocRegisterCommand.cpp ../IoC/IocRegisterCommand.h
@@ -32,25 +28,30 @@ add_executable(httpsvr main.cpp
     ../IoC/Scope.cpp ../IoC/Scope.h
     ../IoC/ScopeChangerAdapter.cpp ../IoC/ScopeChangerAdapter.h
     ../IoC/ScopeContainer.cpp ../IoC/ScopeContainer.h
+
     ../exceptions/RuntimeError.cpp ../exceptions/RuntimeError.h
-    ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
     ../exceptions/InvalidArgument.cpp ../exceptions/InvalidArgument.h
-    RequestInterpretCommand.h RequestInterpretCommand.cpp
-    HttpRequest.h HttpRequest.cpp
+    ../exceptions/CommandException.cpp ../exceptions/CommandException.h
+
+    ../commands/FallbackCommand.cpp ../commands/FallbackCommand.h
+    ../commands/PrintJsonObjectCommand.h ../commands/PrintJsonObjectCommand.cpp
+    ../commands/MacroCommand.cpp ../commands/MacroCommand.h
 
     ../interface/IOutputCommandStream.h
     ../interface/IJsonObject.h
 
+    IRequestHandler.h
+    GetHandler.h GetHandler.cpp
+    RequestHandler.h RequestHandler.cpp
+    NotAllowedHandler.h NotAllowedHandler.cpp
     BadRequestHandler.h BadRequestHandler.cpp
-
+    RequestInterpretCommand.h RequestInterpretCommand.cpp
+    HttpRequest.h HttpRequest.cpp
     DeleteHttpRequestCommand.h DeleteHttpRequestCommand.cpp
-    ../commands/MacroCommand.cpp ../commands/MacroCommand.h
-    ../exceptions/CommandException.cpp ../exceptions/CommandException.h
     SendBadRequestCommand.h SendBadRequestCommand.cpp
     SendRedirectCommand.h SendRedirectCommand.cpp
     SendNotAllowedCommand.h SendNotAllowedCommand.cpp
     HttpRequestJsonObject.h HttpRequestJsonObject.cpp
-    PrintJsonObjectCommand.h PrintJsonObjectCommand.cpp
     IRedirector.h
     MonolithRedirector.h MonolithRedirector.cpp
     IRules.h
