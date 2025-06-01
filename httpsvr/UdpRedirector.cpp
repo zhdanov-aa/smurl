@@ -6,6 +6,7 @@
 #include <boost/asio.hpp>
 #include <boost/json.hpp>
 #include <boost/json/string.hpp>
+#include <boost/json/parse.hpp>
 #include <boost/array.hpp>
 #include <boost/bind/bind.hpp>
 #include <chrono>
@@ -24,7 +25,7 @@ std::string value_to_string(const boost::json::value& value) {
 class JsonUdpClient {
 public:
     JsonUdpClient(boost::asio::io_service& io_service, const std::string& host, unsigned short port)
-        : socket_(io_service, udp::endpoint(udp::v4(), 0)),
+        : socket_(io_service, udp::endpoint(udp::v4(), 8090)),
         remote_endpoint_(udp::endpoint(udp::v4(), port)),
         resolver_(io_service)
     {
@@ -44,34 +45,45 @@ public:
         // Создаем буфер для ответа
         boost::array<char, 1024> recv_buffer;
 
+        response_size = socket_.receive_from(boost::asio::buffer(recv_buffer), remote_endpoint_);
+
+        return boost::json::parse(std::string(recv_buffer.data(), response_size - 1));
+
         // Устанавливаем таймаут
-        boost::asio::deadline_timer timer(socket_.get_executor());
-        timer.expires_from_now(boost::posix_time::milliseconds(50));
+        // boost::asio::deadline_timer timer(socket_.get_executor());
+        // timer.expires_from_now(boost::posix_time::milliseconds(500));
 
         // Запускаем асинхронное чтение
-        socket_.async_receive_from(
-            boost::asio::buffer(recv_buffer),
-            remote_endpoint_,
-            boost::bind(&JsonUdpClient::handleReceive, this,
-                        boost::asio::placeholders::error,
-                        boost::asio::placeholders::bytes_transferred));
+        // socket_.async_receive_from(
+        //     boost::asio::buffer(recv_buffer),
+        //     remote_endpoint_,
+        //     boost::bind(&JsonUdpClient::handleReceive, this,
+        //                 boost::asio::placeholders::error,
+        //                 boost::asio::placeholders::bytes_transferred));
 
         // Запускаем таймаут
-        timer.async_wait(boost::bind(&JsonUdpClient::handleTimeout, this,
-                                     boost::asio::placeholders::error));
+        // timer.async_wait(boost::bind(&JsonUdpClient::handleTimeout, this,
+        //                              boost::asio::placeholders::error));
 
-        io_service_.run();
+        // int count = io_service_.run();
+        // std::cout << "count: " << count << std::endl;
 
-        // Если получили ответ
-        if (response_received) {
-            return parse(std::string(recv_buffer.data(), response_size));
-        }
+        // // Если получили ответ
+        // if (response_received) {
+        //     std::cout << "responce received" << std::endl;
+        // return boost::json::parse(std::string(recv_buffer.data(), response_size - 1));
+        // }
+        // else
+        // {
+        //     std::cout << "responce not received" << std::endl;
+        // }
 
-        return {};
+        // return {};
     }
 
 private:
     void handleReceive(const boost::system::error_code& error, std::size_t bytes_transferred) {
+        std::cout << "received 1" << std::endl;
         if (!error) {
             response_received = true;
             response_size = bytes_transferred;
@@ -79,12 +91,14 @@ private:
         io_service_.stop();
     }
 
-    void handleTimeout(const boost::system::error_code& error) {
-        if (!error) {
-            socket_.cancel();
-            io_service_.stop();
-        }
-    }
+    // void handleTimeout(const boost::system::error_code& error) {
+    //     std::cout << "time out 1" << std::endl;
+    //     if (!error) {
+    //         std::cout << "time out" << std::endl;
+    //         socket_.cancel();
+    //         io_service_.stop();
+    //     }
+    // }
 
     boost::asio::io_service io_service_;
     udp::socket socket_;
@@ -108,10 +122,12 @@ std::string UdpRedirector::GetLocation()
 
     if (response.is_null())
     {
+        std::cout << "response is null" << std::endl;
         throw new RuntimeError("UdpRedirector::GetLocation() failed");
     }
     else
     {
+        std::cout << "response is not null" << std::endl;
         return boost::json::value_to<std::string>(response.at("location"));
     }
 }
