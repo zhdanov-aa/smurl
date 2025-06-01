@@ -4,7 +4,7 @@
 #include "HttpRequestJsonObject.h"
 #include "IoC.h"
 #include "IException.h"
-#include "SendNotAllowedCommand.h"
+#include "SendNotFoundCommand.h"
 #include <stdexcept>
 
 namespace http = boost::beast::http;
@@ -32,6 +32,6 @@ ICommandPtr GetHandler::Handle()
     catch(IException *exception)
     {
         delete exception;
-        return SendNotAllowedCommand::Create(m_request->socketptr());
+        return SendNotFoundCommand::Create(m_request->socketptr());
     }
 }

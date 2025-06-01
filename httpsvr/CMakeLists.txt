@@ -60,7 +60,8 @@ add_executable(httpsvr main.cpp
     CheckConditionCommand.h CheckConditionCommand.cpp
     BeforeCondition.h BeforeCondition.cpp
     HttpRequestAcceptor.h HttpRequestAcceptor.cpp
-    UdpRedirector.h UdpRedirector.cpp)
+    UdpRedirector.h UdpRedirector.cpp
+    SendNotFoundCommand.h SendNotFoundCommand.cpp)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr

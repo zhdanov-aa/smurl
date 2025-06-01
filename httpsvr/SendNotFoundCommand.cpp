@@ -1,20 +1,20 @@
-#include "SendNotAllowedCommand.h"
+#include "SendNotFoundCommand.h"
 #include <boost/beast/http.hpp>
 
 namespace http = boost::beast::http;
 
-SendNotAllowedCommand::SendNotAllowedCommand(HttpSocketPtr socket)
+SendNotFoundCommand::SendNotFoundCommand(HttpSocketPtr socket)
     :m_socket(socket)
 {
 }
 
-void SendNotAllowedCommand::Execute()
+void SendNotFoundCommand::Execute()
 {
     http::response<http::string_body> res;
 
-    res.result(http::status::method_not_allowed);
+    res.result(http::status::not_found);
     res.set(http::field::content_type, "text/plain");
-    res.body() = "Method not allowed";
+    res.body() = "Not found";
 
     http::write(*m_socket, res);
 }
