@@ -53,12 +53,6 @@ add_executable(httpsvr main.cpp
     SendNotAllowedCommand.h SendNotAllowedCommand.cpp
     HttpRequestJsonObject.h HttpRequestJsonObject.cpp
     IRedirector.h
-    MonolithRedirector.h MonolithRedirector.cpp
-    IRules.h
-    RedirectRules.h RedirectRules.cpp
-    ICondition.h
-    CheckConditionCommand.h CheckConditionCommand.cpp
-    BeforeCondition.h BeforeCondition.cpp
     HttpRequestAcceptor.h HttpRequestAcceptor.cpp
     UdpRedirector.h UdpRedirector.cpp
     SendNotFoundCommand.h SendNotFoundCommand.cpp)

@@ -26,6 +26,30 @@ void InitializeCommand::Execute()
 {
     auto requests = make_shared<map<string, UdpRequestDataPtr>>();
 
+    // std::string json_str = R"(
+    // {
+    //     "/search":
+    //     {
+    //         "http://mail.ru":
+    //         {
+    //             "before": "2025-05-24 13:20"
+    //         },
+
+        //         "http://google.ru":
+        //         {
+        //         }
+        //     },
+        //     "/mail":
+        //     {
+        //         "http://yandex.ru":
+        //         {
+        //         }
+        //     }
+        // }
+        // )";
+
+        // JsonPtr jsonRules = std::make_shared<Json>(boost::json::parse(json_str));
+
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Message.Queue.Get",
@@ -63,4 +87,62 @@ void InitializeCommand::Execute()
             return requestId;
         }))->Execute();
 
+    // IoC::Resolve<ICommandPtr>(
+    //     "IoC.Register",
+    //     "Redirector.Rules.Get",
+    //     RESOLVER([jsonRules](IJsonObjectPtr request) -> IRulesPtr {
+
+    //         // Цепочка правил
+    //         RedirectRulesPtr firstRule = nullptr, lastRule = nullptr;
+
+    //         // uri запроса
+    //         auto json = request->getJson();
+    //         auto target = json->at("target").as_string();
+
+    //         // если есть праила для запроса
+    //         if (jsonRules->as_object().contains(target))
+    //         {
+    //             // Итерация по правилам
+    //             for (const auto& ruleDesc : jsonRules->as_object().at(target).as_object())
+    //             {
+    //                 auto location = ruleDesc.key_c_str();
+
+    //                 // Итаерация по командам
+    //                 std::vector<ICommandPtr> commands;
+    //                 for (const auto& conditionDesc : ruleDesc.value().as_object())
+    //                 {
+    //                     commands.push_back(
+    //                         CheckConditionCommand::Create(
+    //                             conditionDesc.key_c_str(),
+    //                             conditionDesc.value().as_string().c_str(),
+    //                             json
+    //                             ));
+    //                 }
+
+    //                 auto newRule = RedirectRules::Create(location, MacroCommand::Create(commands));
+
+    //                 if (firstRule == nullptr)
+    //                 {
+    //                     firstRule = lastRule = newRule;
+    //                 }
+    //                 else
+    //                 {
+    //                     lastRule = lastRule->SetNext(newRule);
+    //                 }
+    //             }
+    //         }
+    //         return firstRule;
+    //     }))->Execute();
+
+    // IoC::Resolve<ICommandPtr>(
+    //     "IoC.Register",
+    //     "Condition.Get",
+    //     RESOLVER([](std::string condition, std::string parameter) -> IConditionPtr {
+    //         // TODO: загрузка плагинов
+    //         if (condition == "before")
+    //         {
+    //             return BeforeCondition::Create(parameter);
+    //         }
+    //         return nullptr;
+    //     }))->Execute();
 }
