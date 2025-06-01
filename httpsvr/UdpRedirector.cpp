@@ -47,7 +47,9 @@ public:
 
         response_size = socket_.receive_from(boost::asio::buffer(recv_buffer), remote_endpoint_);
 
-        return boost::json::parse(std::string(recv_buffer.data(), response_size - 1));
+        // std::cout << "responce from redirector: " << std::string(recv_buffer.data(), response_size) << std::endl;
+
+        return boost::json::parse(std::string(recv_buffer.data(), response_size));
 
         // Устанавливаем таймаут
         // boost::asio::deadline_timer timer(socket_.get_executor());

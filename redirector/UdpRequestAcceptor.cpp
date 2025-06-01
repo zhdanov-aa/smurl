@@ -1,6 +1,9 @@
 #include "UdpRequestAcceptor.h"
 #include "UdpRequestData.h"
 #include "IoC.h"
+#include "IRules.h"
+#include "RequestJsonObject.h"
+#include "IJsonObject.h"
 #include <iostream>
 
 UdpRequestAcceptor::UdpRequestAcceptor(unsigned short port)
@@ -18,14 +21,24 @@ string UdpRequestAcceptor::GetMessage()
     request->m_length = m_socket.receive_from(
         request->m_buffer, request->m_senderEndpoint);
 
-    std::cout << "Адрес: " << request->m_senderEndpoint.address().to_string()
-              << ", Порт: " << request->m_senderEndpoint.port() << std::endl ;
+// ------------
 
-    boost::asio::const_buffer buffer = boost::asio::buffer(R"({"location":"http://github.com"})");
+    std::string location = IoC::Resolve<IRulesPtr>(
+                               "Redirector.Rules.Get",
+                               std::static_pointer_cast<IJsonObject>(RequestJsonObject::Create(request))
+                               )->Conclude();
 
-    // std::cout << "data: " << buffer.size() << std::endl;
+    boost::json::value response = {
+        {"location", location }
+    };
+
+    std::stringstream response_stream;
+    response_stream << response;
+    std::string response_string = response_stream.str();
+
+    boost::asio::const_buffer buffer = boost::asio::buffer(response_string);
 
     m_socket.send_to(buffer, request->m_senderEndpoint);
-
+// --------------
     return IoC::Resolve<string>("Udp.Request.Register", request);
 }

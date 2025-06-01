@@ -46,4 +46,9 @@ add_executable(redirector main.cpp
     UdpRequestAcceptor.h UdpRequestAcceptor.cpp
     UdpRequestData.h UdpRequestData.cpp
     DeleteRequestCommand.h DeleteRequestCommand.cpp
-    RequestJsonObject.h RequestJsonObject.cpp)
+    RequestJsonObject.h RequestJsonObject.cpp
+    IRules.h
+    RedirectRules.cpp RedirectRules.h
+    CheckConditionCommand.cpp CheckConditionCommand.h
+    ICondition.h
+    BeforeCondition.cpp BeforeCondition.h)
