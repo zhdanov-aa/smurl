@@ -16,6 +16,8 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <fstream>
+#include <iostream>
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
@@ -29,30 +31,15 @@ void InitializeCommand::Execute()
 {
     auto requests = make_shared<map<string, UdpRequestDataPtr>>();
 
-    std::string json_str = R"(
+    std::ifstream file("./rules.json");
+    if (!file.is_open())
     {
-        "/search":
-        {
-            "http://mail.ru":
-            {
-                "before": "2025-06-02 13:20"
-            },
-            "http://google.ru":
-            {
-            }
-        },
-        "/mail":
-        {
-            "http://yandex.ru":
-            {
-                "browser": "Firefox"
-            },
-            "http://mail.ru":
-            {
-            }
-        }
+        std::cout << "Не удалось открыть файл rules.json" << std::endl;
     }
-    )";
+
+    // Читаем содержимое файла
+    std::string json_str((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
 
     JsonPtr jsonRules = std::make_shared<Json>(boost::json::parse(json_str));
 
