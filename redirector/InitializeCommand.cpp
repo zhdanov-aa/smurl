@@ -9,11 +9,9 @@
 #include "DirectCommandExecutor.h"
 #include "PrintJsonObjectCommand.h"
 #include "RequestJsonObject.h"
-#include "IRules.h"
 #include "RedirectRules.h"
 #include "CheckConditionCommand.h"
-#include "ICondition.h"
-#include "BeforeCondition.h"
+#include "PluginCondition.h"
 
 #include <memory>
 #include <map>
@@ -46,6 +44,10 @@ void InitializeCommand::Execute()
         "/mail":
         {
             "http://yandex.ru":
+            {
+                "browser": "Firefox"
+            },
+            "http://mail.ru":
             {
             }
         }
@@ -142,11 +144,6 @@ void InitializeCommand::Execute()
         "IoC.Register",
         "Condition.Get",
         RESOLVER([](std::string condition, std::string parameter) -> IConditionPtr {
-            // TODO: загрузка плагинов
-            if (condition == "before")
-            {
-                return BeforeCondition::Create(parameter);
-            }
-            return nullptr;
+            return PluginCondition::Create(condition, parameter);
         }))->Execute();
 }

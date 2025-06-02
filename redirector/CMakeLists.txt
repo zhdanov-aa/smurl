@@ -51,6 +51,12 @@ add_executable(redirector main.cpp
     RedirectRules.cpp RedirectRules.h
     CheckConditionCommand.cpp CheckConditionCommand.h
     ICondition.h
-    BeforeCondition.cpp BeforeCondition.h)
+    PluginCondition.h PluginCondition.cpp)
 
 add_subdirectory(plugins)
+
+add_custom_command(
+    TARGET redirector
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:redirector> ${CMAKE_BINARY_DIR}/bin/
+)

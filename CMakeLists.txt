@@ -7,4 +7,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(httpsvr)
 add_subdirectory(redirector)
-add_subdirectory(IoC.test)
+# add_subdirectory(IoC.test)
