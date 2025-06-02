@@ -52,3 +52,5 @@ add_executable(redirector main.cpp
     CheckConditionCommand.cpp CheckConditionCommand.h
     ICondition.h
     BeforeCondition.cpp BeforeCondition.h)
+
+add_subdirectory(plugins)

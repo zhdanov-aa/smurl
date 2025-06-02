@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.5)
+
+project(before LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(../..)
+
+add_library(before SHARED
+    main.cpp
+    BeforeCondition.cpp BeforeCondition.h
+)
+
+add_custom_command(
+    TARGET before
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:before> ${CMAKE_BINARY_DIR}/bin/
+)
