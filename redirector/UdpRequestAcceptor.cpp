@@ -23,10 +23,17 @@ string UdpRequestAcceptor::GetMessage()
 
 // ------------
 
-    std::string location = IoC::Resolve<IRulesPtr>(
-                               "Redirector.Rules.Get",
-                               std::static_pointer_cast<IJsonObject>(RequestJsonObject::Create(request))
-                               )->Conclude();
+    auto rules = IoC::Resolve<IRulesPtr>(
+        "Redirector.Rules.Get",
+        std::static_pointer_cast<IJsonObject>(RequestJsonObject::Create(request))
+        );
+
+    std::string location = "";
+
+    if (rules != nullptr)
+    {
+        location = rules->Conclude();
+    }
 
     boost::json::value response = {
         {"location", location }

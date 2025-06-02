@@ -27,7 +27,10 @@ ICommandPtr GetHandler::Handle()
     try
     {
         auto newLoaction = redirector->GetLocation();
-        return SendRedirectCommand::Create(m_request->socketptr(), newLoaction);
+        if (newLoaction == "")
+            return SendNotFoundCommand::Create(m_request->socketptr());
+        else
+            return SendRedirectCommand::Create(m_request->socketptr(), newLoaction);
     }
     catch(IException *exception)
     {
