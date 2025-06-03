@@ -55,7 +55,9 @@ add_executable(httpsvr main.cpp
     IRedirector.h
     HttpRequestAcceptor.h HttpRequestAcceptor.cpp
     UdpRedirector.h UdpRedirector.cpp
-    SendNotFoundCommand.h SendNotFoundCommand.cpp)
+    SendNotFoundCommand.h SendNotFoundCommand.cpp
+    InitializeCommand.h InitializeCommand.cpp
+)
 
 # include(GNUInstallDirs)
 # install(TARGETS httpsvr
