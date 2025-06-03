@@ -3,15 +3,12 @@
 #include "IoC.h"
 #include "UdpRequestData.h"
 #include "DeleteRequestCommand.h"
-#include "IMessageQueue.h"
 #include "UdpRequestAcceptor.h"
-#include "IOutputCommandStream.h"
 #include "DirectCommandExecutor.h"
-#include "PrintJsonObjectCommand.h"
 #include "RequestJsonObject.h"
-#include "RedirectRules.h"
-#include "CheckConditionCommand.h"
 #include "PluginCondition.h"
+#include "FindRequestRulesCommand.h"
+#include "SendResponseCommand.h"
 
 #include <memory>
 #include <map>
@@ -60,15 +57,15 @@ void InitializeCommand::Execute()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Message.InterpretCommand.Get",
-        RESOLVER([requests](std::string requestId)-> ICommandPtr {
+        RESOLVER([requests, jsonRules](std::string requestId)-> ICommandPtr {
+            auto requestData = (*requests)[requestId];
             std::vector<ICommandPtr> commands =
                 {
-                    PrintJsonObjectCommand::Create(RequestJsonObject::Create((*requests)[requestId])),
-                    // RequestInterpretCommand::Create(requestId),
+                    FindRequestRulesCommand::Create(requestData, jsonRules),
+                    SendResponseCommand::Create(requestData),
                     DeleteRequestCommand::Create(requests, requestId)
                 };
             return MacroCommand::Create(commands);
-            return nullptr;
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(
@@ -78,53 +75,6 @@ void InitializeCommand::Execute()
             std::string requestId = boost::uuids::to_string(boost::uuids::random_generator()());
             (*requests)[requestId] = nr;
             return requestId;
-        }))->Execute();
-
-    IoC::Resolve<ICommandPtr>(
-        "IoC.Register",
-        "Redirector.Rules.Get",
-        RESOLVER([jsonRules](IJsonObjectPtr request) -> IRulesPtr {
-
-            // Цепочка правил
-            RedirectRulesPtr firstRule = nullptr, lastRule = nullptr;
-
-            // uri запроса
-            auto json = request->getJson();
-            auto target = json->at("target").as_string();
-
-            // если есть праила для запроса
-            if (jsonRules->as_object().contains(target))
-            {
-                // Итерация по правилам
-                for (const auto& ruleDesc : jsonRules->as_object().at(target).as_object())
-                {
-                    auto location = ruleDesc.key_c_str();
-
-                    // Итаерация по командам
-                    std::vector<ICommandPtr> commands;
-                    for (const auto& conditionDesc : ruleDesc.value().as_object())
-                    {
-                        commands.push_back(
-                            CheckConditionCommand::Create(
-                                conditionDesc.key_c_str(),
-                                conditionDesc.value().as_string().c_str(),
-                                json
-                                ));
-                    }
-
-                    auto newRule = RedirectRules::Create(location, MacroCommand::Create(commands));
-
-                    if (firstRule == nullptr)
-                    {
-                        firstRule = lastRule = newRule;
-                    }
-                    else
-                    {
-                        lastRule = lastRule->SetNext(newRule);
-                    }
-                }
-            }
-            return firstRule;
         }))->Execute();
 
     IoC::Resolve<ICommandPtr>(

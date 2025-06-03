@@ -51,7 +51,10 @@ add_executable(redirector main.cpp
     RedirectRules.cpp RedirectRules.h
     CheckConditionCommand.cpp CheckConditionCommand.h
     ICondition.h
-    PluginCondition.h PluginCondition.cpp)
+    PluginCondition.h PluginCondition.cpp
+    FindRequestRulesCommand.h FindRequestRulesCommand.cpp
+    SendResponseCommand.h SendResponseCommand.cpp
+)
 
 add_subdirectory(plugins)
 

@@ -18,34 +18,10 @@ string UdpRequestAcceptor::GetMessage()
 {
     auto request = UdpRequestData::Create();
 
+    request->m_pSocket = &m_socket;
+
     request->m_length = m_socket.receive_from(
         request->m_buffer, request->m_senderEndpoint);
 
-// ------------
-
-    auto rules = IoC::Resolve<IRulesPtr>(
-        "Redirector.Rules.Get",
-        std::static_pointer_cast<IJsonObject>(RequestJsonObject::Create(request))
-        );
-
-    std::string location = "";
-
-    if (rules != nullptr)
-    {
-        location = rules->Conclude();
-    }
-
-    boost::json::value response = {
-        {"location", location }
-    };
-
-    std::stringstream response_stream;
-    response_stream << response;
-    std::string response_string = response_stream.str();
-
-    boost::asio::const_buffer buffer = boost::asio::buffer(response_string);
-
-    m_socket.send_to(buffer, request->m_senderEndpoint);
-// --------------
     return IoC::Resolve<string>("Udp.Request.Register", request);
 }
