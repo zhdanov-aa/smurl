@@ -58,6 +58,7 @@ add_executable(redirector main.cpp
     RequestRulesObject.h RequestRulesObject.cpp
     IResponseSender.h
     UdpResponseSender.h UdpResponseSender.cpp
+    JsonFile.h JsonFile.cpp
 )
 
 add_subdirectory(plugins)

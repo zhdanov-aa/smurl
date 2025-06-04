@@ -15,13 +15,13 @@ using FindRequestRulesCommandPtr = shared_ptr<FindRequestRulesCommand>;
 class FindRequestRulesCommand : public ICommand
 {
     IJsonObjectPtr m_request;
-    JsonPtr m_rules;
+    IJsonObjectPtr m_rules;
     IRulesObjectPtr m_rulesObject;
 
 public:
-    FindRequestRulesCommand(IJsonObjectPtr request, JsonPtr rules, IRulesObjectPtr rulesObject);
+    FindRequestRulesCommand(IJsonObjectPtr request, IJsonObjectPtr rules, IRulesObjectPtr rulesObject);
 
-    static FindRequestRulesCommandPtr Create(IJsonObjectPtr request, JsonPtr rules, IRulesObjectPtr rulesObject)
+    static FindRequestRulesCommandPtr Create(IJsonObjectPtr request, IJsonObjectPtr rules, IRulesObjectPtr rulesObject)
     {
         return make_shared<FindRequestRulesCommand>(request, rules, rulesObject);
     }

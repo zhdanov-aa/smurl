@@ -11,6 +11,7 @@
 #include "SendResponseCommand.h"
 #include "RequestRulesObject.h"
 #include "UdpResponseSender.h"
+#include "JsonFile.h"
 
 #include <memory>
 #include <map>
@@ -29,18 +30,14 @@ InitializeCommand::InitializeCommand()
 void InitializeCommand::Execute()
 {
     auto requests = make_shared<map<string, UdpRequestDataPtr>>();
+    IJsonObjectPtr rulesDescription = JsonFile::Create("./rules.json");
 
-    std::ifstream file("./rules.json");
-    if (!file.is_open())
-    {
-        std::cout << "Не удалось открыть файл rules.json" << std::endl;
-    }
-
-    // Читаем содержимое файла
-    std::string json_str((std::istreambuf_iterator<char>(file)),
-                        std::istreambuf_iterator<char>());
-
-    JsonPtr rulesJson = std::make_shared<Json>(boost::json::parse(json_str));
+    IoC::Resolve<ICommandPtr>(
+        "IoC.Register",
+        "Rules.Description.Get",
+        RESOLVER([rulesDescription]()-> IJsonObjectPtr {
+            return rulesDescription;
+        }))->Execute();
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
@@ -59,14 +56,16 @@ void InitializeCommand::Execute()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Message.InterpretCommand.Get",
-        RESOLVER([requests, rulesJson](std::string requestId)-> ICommandPtr {
+        RESOLVER([requests](std::string requestId)-> ICommandPtr {
             auto requestData = (*requests)[requestId];
-            auto requestJson = RequestJsonObject::Create(requestData);
             auto requestRules = RequestRulesObject::Create(requestData);
             auto responseSender = UdpResponseSender::Create(requestData);
             std::vector<ICommandPtr> commands =
                 {
-                    FindRequestRulesCommand::Create(requestJson, rulesJson, requestRules),
+                    FindRequestRulesCommand::Create(
+                        RequestJsonObject::Create(requestData),
+                        IoC::Resolve<IJsonObjectPtr>("Rules.Description.Get"),
+                        requestRules),
                     SendResponseCommand::Create(requestRules, responseSender),
                     DeleteRequestCommand::Create(requests, requestId)
                 };
