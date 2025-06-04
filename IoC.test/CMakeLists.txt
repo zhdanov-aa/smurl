@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(smurl)
+project(IoC.test)
 
 find_package(Threads REQUIRED)
 find_package(GTest REQUIRED)
@@ -45,14 +45,9 @@ add_executable(ioc_test
     IocSetScopeRelativeCommand_test.cpp
     mock/IScope_mock.h
     mock/IResolverContainer_mock.h
-    mock/IScopeChanger_mock.h)
+    mock/IScopeChanger_mock.h
+)
 
 target_link_libraries(ioc_test PRIVATE ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} GTest::gmock Threads::Threads)
 
-
-# Настройка сбора покрытия
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-# set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
-
-
-add_test(NAME ioc_test COMMAND ioc_test)
+add_test(NAME IoC.test COMMAND ioc_test)
