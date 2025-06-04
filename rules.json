@@ -1,0 +1,22 @@
+{
+    "/welcome":
+    {
+        "http://yandex.ru":
+        {
+            "browser": "Firefox"
+        },
+        "http://google.ru":
+        {
+        }
+    },
+    "/search":
+    {
+        "http://mail.ru":
+        {
+            "before": "2025-06-02 13:20"
+        },
+        "http://google.ru":
+        {
+        }
+    }
+}
