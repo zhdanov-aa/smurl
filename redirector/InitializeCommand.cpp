@@ -9,6 +9,8 @@
 #include "PluginCondition.h"
 #include "FindRequestRulesCommand.h"
 #include "SendResponseCommand.h"
+#include "RequestRulesObject.h"
+#include "UdpResponseSender.h"
 
 #include <memory>
 #include <map>
@@ -38,7 +40,7 @@ void InitializeCommand::Execute()
     std::string json_str((std::istreambuf_iterator<char>(file)),
                         std::istreambuf_iterator<char>());
 
-    JsonPtr jsonRules = std::make_shared<Json>(boost::json::parse(json_str));
+    JsonPtr rulesJson = std::make_shared<Json>(boost::json::parse(json_str));
 
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
@@ -57,12 +59,15 @@ void InitializeCommand::Execute()
     IoC::Resolve<ICommandPtr>(
         "IoC.Register",
         "Message.InterpretCommand.Get",
-        RESOLVER([requests, jsonRules](std::string requestId)-> ICommandPtr {
+        RESOLVER([requests, rulesJson](std::string requestId)-> ICommandPtr {
             auto requestData = (*requests)[requestId];
+            auto requestJson = RequestJsonObject::Create(requestData);
+            auto requestRules = RequestRulesObject::Create(requestData);
+            auto responseSender = UdpResponseSender::Create(requestData);
             std::vector<ICommandPtr> commands =
                 {
-                    FindRequestRulesCommand::Create(requestData, jsonRules),
-                    SendResponseCommand::Create(requestData),
+                    FindRequestRulesCommand::Create(requestJson, rulesJson, requestRules),
+                    SendResponseCommand::Create(requestRules, responseSender),
                     DeleteRequestCommand::Create(requests, requestId)
                 };
             return MacroCommand::Create(commands);

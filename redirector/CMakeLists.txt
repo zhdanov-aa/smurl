@@ -54,6 +54,10 @@ add_executable(redirector main.cpp
     PluginCondition.h PluginCondition.cpp
     FindRequestRulesCommand.h FindRequestRulesCommand.cpp
     SendResponseCommand.h SendResponseCommand.cpp
+    IRulesObject.h
+    RequestRulesObject.h RequestRulesObject.cpp
+    IResponseSender.h
+    UdpResponseSender.h UdpResponseSender.cpp
 )
 
 add_subdirectory(plugins)

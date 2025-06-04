@@ -4,6 +4,7 @@
 #include "ICommand.h"
 #include "UdpRequestData.h"
 #include "IJsonObject.h"
+#include "IRulesObject.h"
 #include <memory>
 
 using namespace std;
@@ -13,15 +14,16 @@ using FindRequestRulesCommandPtr = shared_ptr<FindRequestRulesCommand>;
 
 class FindRequestRulesCommand : public ICommand
 {
-    UdpRequestDataPtr m_request;
+    IJsonObjectPtr m_request;
     JsonPtr m_rules;
+    IRulesObjectPtr m_rulesObject;
 
 public:
-    FindRequestRulesCommand(UdpRequestDataPtr request, JsonPtr rules);
+    FindRequestRulesCommand(IJsonObjectPtr request, JsonPtr rules, IRulesObjectPtr rulesObject);
 
-    static FindRequestRulesCommandPtr Create(UdpRequestDataPtr request, JsonPtr rules)
+    static FindRequestRulesCommandPtr Create(IJsonObjectPtr request, JsonPtr rules, IRulesObjectPtr rulesObject)
     {
-        return make_shared<FindRequestRulesCommand>(request, rules);
+        return make_shared<FindRequestRulesCommand>(request, rules, rulesObject);
     }
 
     void Execute() override;

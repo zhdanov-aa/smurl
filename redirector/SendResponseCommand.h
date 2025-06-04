@@ -2,7 +2,8 @@
 #define SENDRESPONSECOMMAND_H
 
 #include "ICommand.h"
-#include "UdpRequestData.h"
+#include "IRulesObject.h"
+#include "IResponseSender.h"
 #include <memory>
 
 using namespace std;
@@ -12,14 +13,15 @@ using SendResponseCommandPtr = shared_ptr<SendResponseCommand>;
 
 class SendResponseCommand : public ICommand
 {
-    UdpRequestDataPtr m_request;
+    IRulesObjectPtr m_rules;
+    IResponseSenderPtr m_sender;
 
 public:
-    SendResponseCommand(UdpRequestDataPtr request);
+    SendResponseCommand(IRulesObjectPtr rules, IResponseSenderPtr sender);
 
-    static SendResponseCommandPtr Create(UdpRequestDataPtr request)
+    static SendResponseCommandPtr Create(IRulesObjectPtr rules, IResponseSenderPtr sender)
     {
-        return make_shared<SendResponseCommand>(request);
+        return make_shared<SendResponseCommand>(rules, sender);
     }
 
     void Execute() override;

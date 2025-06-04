@@ -5,21 +5,19 @@
 #include "CheckConditionCommand.h"
 #include "MacroCommand.h"
 
-FindRequestRulesCommand::FindRequestRulesCommand(UdpRequestDataPtr request, JsonPtr rules)
-    : m_request(request), m_rules(rules)
+FindRequestRulesCommand::FindRequestRulesCommand(IJsonObjectPtr request, JsonPtr rules, IRulesObjectPtr rulesObject)
+    : m_request(request), m_rules(rules), m_rulesObject(rulesObject)
 {
 }
 
 
 void FindRequestRulesCommand::Execute()
 {
-    auto request = RequestJsonObject::Create(m_request);
-
     // Цепочка правил
     RedirectRulesPtr firstRule = nullptr, lastRule = nullptr;
 
     // uri запроса
-    auto json = request->getJson();
+    auto json = m_request->getJson();
     auto target = json->at("target").as_string();
 
     // если есть праила для запроса
@@ -28,7 +26,7 @@ void FindRequestRulesCommand::Execute()
         // Итерация по правилам
         for (const auto& ruleDesc : m_rules->as_object().at(target).as_object())
         {
-            auto location = ruleDesc.key_c_str();
+            auto new_location = ruleDesc.key_c_str();
 
             // Итаерация по командам
             std::vector<ICommandPtr> commands;
@@ -42,7 +40,7 @@ void FindRequestRulesCommand::Execute()
                         ));
             }
 
-            auto newRule = RedirectRules::Create(location, MacroCommand::Create(commands));
+            auto newRule = RedirectRules::Create(new_location, MacroCommand::Create(commands));
 
             if (firstRule == nullptr)
             {
@@ -55,5 +53,5 @@ void FindRequestRulesCommand::Execute()
         }
     }
 
-    m_request->rules = firstRule;
+    m_rulesObject->setRules(firstRule);
 }

@@ -1,13 +1,14 @@
 #include "SendResponseCommand.h"
+#include <sstream>
 
-SendResponseCommand::SendResponseCommand(UdpRequestDataPtr request)
-    :m_request(request)
+SendResponseCommand::SendResponseCommand(IRulesObjectPtr rules, IResponseSenderPtr sender)
+    :m_rules(rules), m_sender(sender)
 {
 }
 
 void SendResponseCommand::Execute()
 {
-    auto rules = m_request->rules;
+    auto rules = m_rules->getRules();
     std::string location = "";
 
     if (rules != nullptr)
@@ -23,7 +24,5 @@ void SendResponseCommand::Execute()
     response_stream << response;
     std::string response_string = response_stream.str();
 
-    boost::asio::const_buffer buffer = boost::asio::buffer(response_string);
-
-    m_request->m_pSocket->send_to(buffer, m_request->m_senderEndpoint);
+    m_sender->Send(response_string);
 }
