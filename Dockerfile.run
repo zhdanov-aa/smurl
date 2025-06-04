@@ -1,2 +1,2 @@
 docker build --tag=smurl .
-docker run -p 8080:8080 --name smurl-container smurl:latest
+docker run --rm -p 8080:8080 --name smurl-demo smurl:latest

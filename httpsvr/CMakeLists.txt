@@ -64,9 +64,3 @@ add_executable(httpsvr main.cpp
 #     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 #     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 # )
-
-add_custom_command(
-    TARGET httpsvr
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:httpsvr> ${CMAKE_BINARY_DIR}/bin/
-)

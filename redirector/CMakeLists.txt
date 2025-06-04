@@ -58,8 +58,3 @@ add_executable(redirector main.cpp
 
 add_subdirectory(plugins)
 
-add_custom_command(
-    TARGET redirector
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:redirector> ${CMAKE_BINARY_DIR}/bin/
-)

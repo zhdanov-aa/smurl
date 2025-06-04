@@ -11,9 +11,3 @@ add_library(browser SHARED
     main.cpp
     BrowserCondition.h BrowserCondition.cpp
 )
-
-add_custom_command(
-    TARGET browser
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:browser> ${CMAKE_BINARY_DIR}/bin/
-)

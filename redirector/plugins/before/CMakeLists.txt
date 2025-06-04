@@ -11,9 +11,3 @@ add_library(before SHARED
     main.cpp
     BeforeCondition.cpp BeforeCondition.h
 )
-
-add_custom_command(
-    TARGET before
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:before> ${CMAKE_BINARY_DIR}/bin/
-)
